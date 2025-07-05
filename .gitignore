@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+*.pyd
+*.so
+
+# Virtual environment
+virtualenv/
+virtualenvs/
+venv/
+.venv/
+
+# IDEs
+.idea/
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Test and build artifacts
+.pytest_cache/
+build/
+dist/
+*.egg-info/
+
+# Logs and databases
+*.log
+*.sqlite3
+
+# Sensitive files
+.env
+.flaskenv
