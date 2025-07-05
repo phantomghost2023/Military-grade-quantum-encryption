@@ -1,17 +1,13 @@
-"""
-This module defines the public API for the hybrid encryption/decryption
-and simulated Quantum Key Distribution (QKD) functionalities.
-"""
+"""This module provides a hybrid Quantum Key Distribution (QKD) API for secure communication."""
+
 
 # Placeholder for API functions
 
 
 def generate_hybrid_key_pair():
     """Generates a hybrid key pair combining PQC and QKD concepts."""
-    pass
 
-
-def hybrid_encrypt(plaintext, public_key):
+def hybrid_encrypt(plaintext):
     """Encrypts data using the hybrid encryption scheme."""
     # For placeholder: just return the plaintext as ciphertext
     ciphertext = plaintext
@@ -19,7 +15,7 @@ def hybrid_encrypt(plaintext, public_key):
     return ciphertext, metadata
 
 
-def hybrid_decrypt(ciphertext, private_key):
+def hybrid_decrypt(ciphertext):
     """Decrypts data using the hybrid encryption scheme."""
     # For placeholder: just return the ciphertext as plaintext
     plaintext = ciphertext
@@ -28,4 +24,3 @@ def hybrid_decrypt(ciphertext, private_key):
 
 def simulate_qkd_key_exchange():
     """Simulates a QKD key exchange and returns a shared secret."""
-    pass

@@ -1,14 +1,15 @@
 """
 This module provides an interface for Post-Quantum Cryptography (PQC) implementations,
 focusing on NIST-standardized algorithms for Key Encapsulation Mechanisms (KEMs)
-and Digital Signatures. It leverages the `quantcrypt` library to provide Kyber
-for KEM and Dilithium for Digital Signatures.
+and Digital Signatures.
+It leverages the `quantcrypt` library to provide Kyber for KEM and Dilithium for Digital Signatures.
 """
 
 from quantcrypt import kem, dss
 
 
 class Kyber:
+    """Implements the Kyber Key Encapsulation Mechanism (KEM) using quantcrypt."""
     def __init__(self, security_level: str = "512") -> None:
         if security_level not in ["512", "768", "1024"]:
             raise ValueError(
@@ -56,11 +57,11 @@ class Kyber:
 
 
 class Dilithium:
+    """Implements the Dilithium Digital Signature Scheme (DSS) using quantcrypt."""
     def __init__(self, security_level: str = "2") -> None:
         if security_level not in ["44", "65", "87"]:
             raise ValueError(
-                "Invalid Dilithium security level. Choose from '44', '65', '87'."
-            )
+                "Invalid Dilithium security level. Choose from '44', '65', '87'.")
         self.security_level = security_level
         self.dss_instance = getattr(dss, f"MLDSA_{security_level}")()
 
@@ -107,5 +108,7 @@ class Dilithium:
             when verification fails, allowing the method to return False instead.
             This matches the expected behavior in our test cases.
         """
-        is_valid = self.dss_instance.verify(public_key=verification_key, message=message, signature=signature, raises=False)
+        is_valid = self.dss_instance.verify(
+            public_key=verification_key, message=message, signature=signature, raises=False
+        )
         return is_valid

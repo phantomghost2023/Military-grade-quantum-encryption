@@ -75,11 +75,11 @@ def test_basic_functionality():
         from src.hybrid_qkd_api import hybrid_encrypt, hybrid_decrypt
         
         # Test hybrid encryption (placeholder)
-        ciphertext, metadata = hybrid_encrypt(b"test", None)
+        ciphertext, metadata = hybrid_encrypt(b"test")
         print("✓ Hybrid encryption test successful")
         
         # Test hybrid decryption (placeholder)
-        plaintext = hybrid_decrypt(ciphertext, None)
+        plaintext = hybrid_decrypt(ciphertext)
         print("✓ Hybrid decryption test successful")
         
     except Exception as e:
@@ -107,4 +107,4 @@ def main():
     return 0
 
 if __name__ == "__main__":
-    exit(main()) 
+    exit(main())

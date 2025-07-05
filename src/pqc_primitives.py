@@ -1,17 +1,14 @@
 # src/pqc_primitives.py
 
 """
-This module will house the implementations of selected Post-Quantum Cryptography (PQC)
-cryptographic primitives, including Key Encapsulation Mechanisms (KEMs) and Digital Signature Algorithms.
-
-Phase 1.2: PQC Cryptographic Primitive Implementation
-- Implement the selected PQC KEM algorithm (e.g., CRYSTALS-KYBER) for key encapsulation and decapsulation.
-- Implement the selected PQC Digital Signature algorithm (e.g., CRYSTALS-Dilithium) for signing and verification.
+This module provides implementations of Post-Quantum Cryptography (PQC) primitives,
+including KEMs (e.g., CRYSTALS-KYBER) and Digital Signature Algorithms (e.g., CRYSTALS-Dilithium).
 """
 
 
 # Placeholder for CRYSTALS-KYBER implementation
 class Kyber:
+    """Placeholder for CRYSTALS-KYBER implementation."""
     def __init__(self, security_level=3):
         """Initialize Kyber with security level (1=512, 2=768, 3=1024)."""
         self.security_level = security_level
@@ -33,16 +30,17 @@ class Kyber:
     def encapsulate(self, public_key):
         """Encapsulates a shared secret using the recipient's public key."""
         # Implementation will be added in next steps
-        pass
+
 
     def decapsulate(self, private_key, ciphertext):
         """Decapsulates the shared secret using the recipient's private key and ciphertext."""
         # Implementation will be added in next steps
-        pass
+
 
 
 # Placeholder for CRYSTALS-Dilithium implementation
 class Dilithium:
+    """Placeholder for CRYSTALS-Dilithium implementation."""
     def __init__(self, security_level=3):
         """Initialize Dilithium with security level (2, 3, 5)."""
         self.security_level = security_level
@@ -76,12 +74,12 @@ class Dilithium:
     def generate_keypair(self):
         """Generates a Dilithium public and private key pair."""
         # Implementation will be added in next steps
-        pass
+
 
     def sign(self, private_key, message):
         """Signs a message using the private key."""
         # Implementation will be added in next steps
-        pass
+
 
     def verify(self, public_key, message, signature):
         """Verifies a signature using the public key and message."""

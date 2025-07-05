@@ -1,1 +1,4 @@
-quantcrypt
+quantcrypt==0.4.2
+pylint
+Flask
+gevent
