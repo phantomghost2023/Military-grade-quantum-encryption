@@ -2,7 +2,11 @@
 
 This section outlines the tasks required to implement a graphical user interface (GUI) for the error handling suite, focusing on a futuristic look and feel, and enhancing error visibility and management.
 
-## Project Overview & Completed Milestones
+## Module-Specific TODOs
+
+- [ ] Review and integrate tasks from [dilithium-py-KUMO/TODO.md](dilithium-py-KUMO/TODO.md)
+
+## Completed Tasks
 - [x] Initial project setup and dependency management (`requirements.txt` updated).
 - [x] Core backend automation engine developed and integrated.
 - [x] Agent management system (`agent_manager.py`) implemented with registration, heartbeat, and task distribution.
