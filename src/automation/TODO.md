@@ -3,9 +3,9 @@
 This document outlines the tasks required to develop an automation system for the Military-Grade Quantum Encryption Framework, aiming for an "MCP-like" capability to orchestrate and manage various tasks with user permission.
 
 ## 1. Core Automation Engine
-- [ ] Design the architecture for the central automation engine.
-- [ ] Implement a task scheduler and dispatcher.
-- [ ] Develop a mechanism for defining and executing automated workflows.
+- [x] Design the architecture for the central automation engine.
+- [x] Implement a task scheduler and dispatcher.
+- [x] Develop a mechanism for defining and executing automated workflows.
 
 ## 2. Policy and Permission Management
 - [ ] Design and implement a policy engine to enforce user permissions and predefined rules for automated tasks.
@@ -14,13 +14,13 @@ This document outlines the tasks required to develop an automation system for th
 
 ## 3. Event-Driven Triggers
 - [ ] Identify key events within the framework (e.g., key expiration, error detection, new data arrival) that can trigger automated actions.
-- [ ] Implement an event listener and processing mechanism.
+- [x] Implement an event listener and processing mechanism.
 - [ ] Define a system for mapping events to specific automated workflows.
 
 ## 4. Integration with Existing Modules
 - [ ] Integrate with the KMS for automated key management operations (e.g., rotation, revocation).
 - [ ] Integrate with the ErrorHandler for automated error diagnosis, logging, and potential resolution.
-- [ ] Develop APIs or interfaces for the automation engine to interact with PQC and QKD simulation modules.
+- [x] Develop APIs or interfaces for the automation engine to interact with PQC and QKD simulation modules.
 
 ## 5. User Interface for Control and Oversight
 - [ ] Design a dashboard for monitoring automated tasks and system status.

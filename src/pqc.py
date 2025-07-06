@@ -16,7 +16,7 @@ class Kyber:
                 "Invalid Kyber security level. Choose from '512', '768', '1024'."
             )
         self.security_level = security_level
-        self.kem_instance = getattr(kem, f"MLKEM_{security_level}")()
+        self.kem_instance = kem.Kyber(security_level=security_level)
 
     def generate_keypair(self) -> tuple[bytes, bytes]:
         """
@@ -58,12 +58,8 @@ class Kyber:
 
 class Dilithium:
     """Implements the Dilithium Digital Signature Scheme (DSS) using quantcrypt."""
-    def __init__(self, security_level: str = "2") -> None:
-        if security_level not in ["44", "65", "87"]:
-            raise ValueError(
-                "Invalid Dilithium security level. Choose from '44', '65', '87'.")
-        self.security_level = security_level
-        self.dss_instance = getattr(dss, f"MLDSA_{security_level}")()
+    def __init__(self) -> None:
+        self.dss_instance = dss.Dilithium()
 
     def generate_keypair(self):
         """

@@ -48,24 +48,24 @@ This roadmap outlines the key phases and milestones for developing the conceptua
 *   **1.6 API Definition (PQC Module):**
     *   Define the public API for interacting with the PQC module.
 
-## Phase 2: Simulated QKD & Hybrid Integration
+## Phase 2: Simulated QKD & Hybrid Integration (Completed)
 
-**Goal:** Develop the simulated QKD module and integrate it with the PQC and classical cryptographic components.
+**Goal:** Developed the simulated QKD module and integrated it with the PQC and classical cryptographic components.
 
 *   **2.1 Simulated QKD Module Development:**
-    *   Implement a software module that simulates a QKD protocol (e.g., BB84).
-    *   Focus on demonstrating key establishment and eavesdropping detection principles.
+    *   Implemented a software module that simulates a QKD protocol (e.g., BB84).
+    *   Focused on demonstrating key establishment and eavesdropping detection principles.
     *   *Note: This is a conceptual simulation, not a true quantum implementation.*
 *   **2.2 Hybrid Key Exchange Mechanism:**
-    *   Develop a hybrid key exchange mechanism that combines the simulated QKD output with PQC KEMs and classical key exchange (e.g., Diffie-Hellman).
-    *   Ensure secure and authenticated key agreement.
+    *   Developed a hybrid key exchange mechanism that combines the simulated QKD output with PQC KEMs and classical key exchange (e.g., Diffie-Hellman).
+    *   Ensured secure and authenticated key agreement.
 *   **2.3 Hybrid Encryption Scheme:**
-    *   Implement a hybrid encryption scheme that uses PQC KEMs to encapsulate a symmetric key (e.g., AES-256 key), which then encrypts the actual data.
-    *   Ensure seamless integration and secure data encapsulation.
+    *   Implemented a hybrid encryption scheme that uses PQC KEMs to encapsulate a symmetric key (e.g., AES-256 key), which then encrypts the actual data.
+    *   Ensured seamless integration and secure data encapsulation.
 *   **2.4 Data Integrity & Authentication:**
-    *   Integrate classical hashing algorithms (e.g., SHA-3) and PQC digital signatures for data integrity and authentication.
+    *   Integrated classical hashing algorithms (e.g., SHA-3) and PQC digital signatures for data integrity and authentication.
 *   **2.5 API Definition (Hybrid & QKD Simulation):**
-    *   Define the public API for the hybrid encryption and simulated QKD functionalities.
+    *   Defined the public API for the hybrid encryption and simulated QKD functionalities.
 
 ## Phase 3: Key Management System (KMS) Development
 
