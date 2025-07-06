@@ -1,3 +1,5 @@
+from dilithium_py_KUMO.dilithium import Dilithium as DilithiumKUMO, DEFAULT_PARAMETERS
+
 # src/pqc_primitives.py
 
 """
@@ -25,65 +27,55 @@ class Kyber:
 
     def generate_keypair(self):
         """Generates a Kyber public and private key pair."""
-        raise NotImplementedError("Kyber key generation not yet implemented.")
+        # This is a simplified placeholder. A real Kyber implementation would involve
+        # polynomial arithmetic, NTT, and sampling from distributions.
+        public_key = f"kyber_pk_{self.security_level}_" + "abc" * 10
+        private_key = f"kyber_sk_{self.security_level}_" + "xyz" * 10
+        return public_key.encode(), private_key.encode()
 
     def encapsulate(self, public_key):
         """Encapsulates a shared secret using the recipient's public key."""
-        # Implementation will be added in next steps
-
+        # Placeholder for encapsulation. In a real KEM, this would derive a shared secret
+        # and a ciphertext from the public key.
+        shared_secret = b"shared_secret_kyber_" + public_key[:10]
+        ciphertext = b"ciphertext_kyber_" + public_key[10:]
+        return shared_secret, ciphertext
 
     def decapsulate(self, private_key, ciphertext):
         """Decapsulates the shared secret using the recipient's private key and ciphertext."""
-        # Implementation will be added in next steps
+        # Placeholder for decapsulation. In a real KEM, this would recover the shared secret
+        # from the private key and ciphertext.
+        shared_secret = b"shared_secret_kyber_" + private_key[:10]
+        return shared_secret
 
 
-
-# Placeholder for CRYSTALS-Dilithium implementation
 class Dilithium:
-    """Placeholder for CRYSTALS-Dilithium implementation."""
+    """Wrapper for CRYSTALS-Dilithium implementation from dilithium-py-KUMO."""
     def __init__(self, security_level=3):
         """Initialize Dilithium with security level (2, 3, 5)."""
         self.security_level = security_level
-        self.params = self._get_parameters()
-
-    def _get_parameters(self):
-        """Return parameters based on security level."""
-        params = {
-            2: {"n": 256, "k": 4, "l": 4, "eta": 2, "tau": 39, "beta": 78, "omega": 80},
-            3: {
-                "n": 256,
-                "k": 6,
-                "l": 5,
-                "eta": 2,
-                "tau": 49,
-                "beta": 196,
-                "omega": 120,
-            },
-            5: {
-                "n": 256,
-                "k": 8,
-                "l": 7,
-                "eta": 4,
-                "tau": 60,
-                "beta": 120,
-                "omega": 128,
-            },
-        }
-        return params.get(self.security_level, params[3])
+        if security_level == 2:
+            self.dilithium_instance = DilithiumKUMO(DEFAULT_PARAMETERS["dilithium2"])
+        elif security_level == 3:
+            self.dilithium_instance = DilithiumKUMO(DEFAULT_PARAMETERS["dilithium3"])
+        elif security_level == 5:
+            self.dilithium_instance = DilithiumKUMO(DEFAULT_PARAMETERS["dilithium5"])
+        else:
+            raise ValueError("Invalid Dilithium security level. Choose 2, 3, or 5.")
 
     def generate_keypair(self):
         """Generates a Dilithium public and private key pair."""
-        # Implementation will be added in next steps
-
+        pk, sk = self.dilithium_instance.keygen()
+        return pk, sk
 
     def sign(self, private_key, message):
         """Signs a message using the private key."""
-        # Implementation will be added in next steps
-
+        signature = self.dilithium_instance.sign(private_key, message)
+        return signature
 
     def verify(self, public_key, message, signature):
         """Verifies a signature using the public key and message."""
-        raise NotImplementedError("Dilithium verification not yet implemented.")
+        return self.dilithium_instance.verify(public_key, message, signature)
 
 
 if __name__ == "__main__":

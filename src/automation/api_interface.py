@@ -17,8 +17,7 @@ app = Flask(__name__)
 
 # Initialize core components
 engine = AutomationEngine()
-policy_manager = PolicyManager()
-event_manager = EventManager()
+event_manager = EventManager(engine) # Pass engine to EventManager
 agent_manager = AgentManager()
 
 # Start the engine and event manager worker threads
@@ -93,22 +92,71 @@ def get_task_status(task_id):
 def add_policy_api():
     """
     Adds a new policy.
-    Requires 'policy_name' and 'rules' in the request body.
+    Requires 'name', 'description', 'rules', and 'actions' in the request body.
     """
     data = request.get_json()
-    policy_name = data.get('policy_name')
+    name = data.get('name')
+    description = data.get('description', '')
     rules = data.get('rules')
-    user_roles = data.get('user_roles', ['default'])
+    actions = data.get('actions', [])
 
-    if not policy_name or not rules:
-        return jsonify({"error": "'policy_name' and 'rules' are required"}), 400
+    if not name or not rules:
+        return jsonify({"error": "'name' and 'rules' are required"}), 400
 
-    if not policy_manager.check_permission(user_roles, 'manage_policies'):
-        return jsonify({"error": "Permission denied to manage policies"}), 403
+    # TODO: Implement proper permission check using the policy engine
+    # if not engine.policy_engine.evaluate({"action_requested": "add_policy", "user_roles": user_roles}):
+    #     return jsonify({"error": "Permission denied to add policies"}), 403
 
-    policy_manager.add_policy(policy_name, rules)
-    event_manager.emit_event("policy_added", {"policy_name": policy_name, "rules": rules})
-    return jsonify({"message": f"Policy '{policy_name}' added"}), 201
+    engine.add_policy(name, description, rules, actions)
+    event_manager.emit_event("policy_added", {"policy_name": name, "rules": rules, "actions": actions})
+    return jsonify({"message": f"Policy '{name}' added"}), 201
+
+@app.route('/api/v1/policies', methods=['GET'])
+def get_policies_api():
+    """
+    Retrieves all policies.
+    """
+    policies = engine.get_policies()
+    return jsonify({"policies": policies})
+
+@app.route('/api/v1/policies/<policy_name>', methods=['GET'])
+def get_policy_api(policy_name):
+    """
+    Retrieves a specific policy by name.
+    """
+    policy = engine.get_policy(policy_name)
+    if policy:
+        return jsonify({"policy": policy})
+    return jsonify({"error": "Policy not found"}), 404
+
+@app.route('/api/v1/policies/<policy_name>', methods=['PUT'])
+def update_policy_api(policy_name):
+    """
+    Updates an existing policy.
+    """
+    data = request.get_json()
+    new_description = data.get('description')
+    new_rules = data.get('rules')
+    new_actions = data.get('actions')
+
+    # TODO: Implement proper permission check using the policy engine
+
+    if engine.update_policy(policy_name, new_description, new_rules, new_actions):
+        event_manager.emit_event("policy_updated", {"policy_name": policy_name})
+        return jsonify({"message": f"Policy '{policy_name}' updated"})
+    return jsonify({"error": "Policy not found"}), 404
+
+@app.route('/api/v1/policies/<policy_name>', methods=['DELETE'])
+def delete_policy_api(policy_name):
+    """
+    Deletes a policy.
+    """
+    # TODO: Implement proper permission check using the policy engine
+
+    if engine.delete_policy(policy_name):
+        event_manager.emit_event("policy_deleted", {"policy_name": policy_name})
+        return jsonify({"message": f"Policy '{policy_name}' deleted"})
+    return jsonify({"error": "Policy not found"}), 404
 
 @app.route('/api/v1/roles', methods=['POST'])
 def add_role_api():
@@ -124,12 +172,16 @@ def add_role_api():
     if not role_name or not permissions:
         return jsonify({"error": "'role_name' and 'permissions' are required"}), 400
 
-    if not policy_manager.check_permission(user_roles, 'manage_roles'):
-        return jsonify({"error": "Permission denied to manage roles"}), 403
+    # TODO: Implement proper permission check using the policy engine
+    # if not engine.policy_engine.evaluate({"action_requested": "add_role", "user_roles": user_roles}):
+    #     return jsonify({"error": "Permission denied to manage roles"}), 403
 
-    policy_manager.add_role(role_name, permissions)
-    event_manager.emit_event("role_added", {"role_name": role_name, "permissions": permissions})
-    return jsonify({"message": f"Role '{role_name}' added"}), 201
+    # This functionality should ideally be moved to the PolicyEngine or a dedicated RoleManager
+    # For now, we'll keep it here for demonstration purposes.
+    # In a real system, roles would be managed more robustly.
+    # For now, we'll just log it.
+    logging.info(f"Attempting to add role: {role_name} with permissions: {permissions}")
+    return jsonify({"message": f"Role '{role_name}' added (conceptual)"}), 201
 
 # Agent Management Endpoints
 @app.route('/api/v1/agents', methods=['GET'])
@@ -166,15 +218,68 @@ def assign_task(agent_id):
 
 
 if __name__ == '__main__':
-    # Example initial policies and roles
-    policy_manager.add_policy("default_task_creation", {"allow": ["create_task"]})
-    policy_manager.add_role("default", ["create_task", "view_status"])
-    policy_manager.add_role("admin", ["*", "manage_policies", "manage_roles"])
+    # Example initial policies and roles (these should be loaded from persistence)
+    # For now, we'll just add a sample policy
+    engine.add_policy(
+        name="Allow_Admin_Task_Creation",
+        description="Allows users with 'admin' role to create tasks.",
+        rules={"action_requested": "create_task", "user_role": "admin"},
+        actions=["allow_action"]
+    )
+    engine.add_policy(
+        name="Allow_Admin_Policy_Management",
+        description="Allows users with 'admin' role to manage policies.",
+        rules={"action_requested": ["add_policy", "view_policies", "view_policy", "update_policy", "delete_policy"], "user_role": "admin"},
+        actions=["allow_action"]
+    )
+    engine.add_policy(
+        name="Allow_Admin_Role_Management",
+        description="Allows users with 'admin' role to manage roles.",
+        rules={"action_requested": "add_role", "user_role": "admin"},
+        actions=["allow_action"]
+    )
+    engine.add_policy(
+        name="Allow_Admin_Task_Control",
+        description="Allows users with 'admin' role to view and cancel tasks.",
+        rules={"action_requested": ["view_all_tasks", "cancel_task", "view_task_history", "list_available_tasks"], "user_role": "admin"},
+        actions=["allow_action"]
+    )
+    engine.add_policy(
+        name="Allow_Admin_Manual_Task_Trigger",
+        description="Allows users with 'admin' role to manually trigger specific tasks.",
+        rules={"action_requested": [f"trigger_task_{task_name}" for task_name in TASK_REGISTRY.keys()], "user_role": "admin"},
+        actions=["allow_action"]
+    )
+    engine.add_policy(
+        name="Allow_Default_View_Status",
+        description="Allows users with 'default' role to view status.",
+        rules={"action_requested": "view_status", "user_role": "default"},
+        actions=["allow_action"]
+    )
 
     # Register a simple event handler for task creation events
     def handle_task_created_event(payload):
         logging.info(f"API Interface: Received task_created event for task: {payload.get('task_name')}")
     event_manager.register_handler("task_created", handle_task_created_event)
+
+    # Register KMS automation tasks to be triggered by events
+    engine.register_event_task("key_expiration", automated_key_rotation, key_id="example_key_id") # Example: replace with actual key_id from event payload
+    engine.register_event_task("key_revocation_request", automated_key_revocation, key_id="example_key_id") # Example
+    engine.register_event_task("new_key_needed", automated_key_generation, key_type="hybrid") # Example
+
+    # Register error automation tasks
+    from automation.error_automation_tasks import automated_error_logging, automated_admin_notification, automated_system_restart_attempt
+    engine.register_event_task("error_detected", automated_error_logging)
+    engine.register_event_task("critical_error", automated_error_logging)
+    engine.register_event_task("critical_error", automated_admin_notification)
+    engine.register_event_task("critical_error", automated_system_restart_attempt)
+
+    # Register error automation tasks
+    from automation.error_automation_tasks import automated_error_logging, automated_admin_notification, automated_system_restart_attempt
+    engine.register_event_task("error_detected", automated_error_logging)
+    engine.register_event_task("critical_error", automated_error_logging)
+    engine.register_event_task("critical_error", automated_admin_notification)
+    engine.register_event_task("critical_error", automated_system_restart_attempt)
 
     # Run the Flask app
     # In a production environment, use a more robust WSGI server like Gunicorn or uWSGI

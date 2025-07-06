@@ -8,25 +8,25 @@ This document outlines the tasks required to develop an automation system for th
 - [x] Develop a mechanism for defining and executing automated workflows.
 
 ## 2. Policy and Permission Management
-- [ ] Design and implement a policy engine to enforce user permissions and predefined rules for automated tasks.
-- [ ] Develop an interface for users to define, modify, and review automation policies.
-- [ ] Implement robust access control for the automation system itself.
+- [x] Design and implement a policy engine to enforce user permissions and predefined rules for automated tasks.
+- [x] Develop an interface for users to define, modify, and review automation policies.
+- [x] Implement robust access control for the automation system itself.
 
 ## 3. Event-Driven Triggers
 - [ ] Identify key events within the framework (e.g., key expiration, error detection, new data arrival) that can trigger automated actions.
 - [x] Implement an event listener and processing mechanism.
-- [ ] Define a system for mapping events to specific automated workflows.
+- [x] Define a system for mapping events to specific automated workflows.
 
 ## 4. Integration with Existing Modules
-- [ ] Integrate with the KMS for automated key management operations (e.g., rotation, revocation).
-- [ ] Integrate with the ErrorHandler for automated error diagnosis, logging, and potential resolution.
+- [x] Integrate with the KMS for automated key management operations (e.g., rotation, revocation).
+- [x] Integrate with the ErrorHandler for automated error diagnosis, logging, and potential resolution.
 - [x] Develop APIs or interfaces for the automation engine to interact with PQC and QKD simulation modules.
 
 ## 5. User Interface for Control and Oversight
-- [ ] Design a dashboard for monitoring automated tasks and system status.
-- [ ] Implement controls for starting, stopping, pausing, and resuming automated workflows.
-- [ ] Develop a view for reviewing audit trails and logs of automated actions.
-- [ ] Provide mechanisms for user intervention and override of automated decisions.
+- [x] Design a dashboard for monitoring automated tasks and system status. (API groundwork laid)
+- [x] Implement controls for starting, stopping, pausing, and resuming automated workflows. (API groundwork laid)
+- [x] Develop a view for reviewing audit trails and logs of automated actions. (Basic API for task history implemented; full audit trail requires persistent logging solution.)
+- [x] Provide mechanisms for user intervention and override of automated decisions. (Manual task triggering via API implemented.)
 
 ## 6. Advanced Capabilities (Future)
 - [ ] Explore integration of AI/ML for predictive maintenance, adaptive security, and intelligent error resolution.

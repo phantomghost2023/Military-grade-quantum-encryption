@@ -11,7 +11,7 @@ class EventManager:
     Manages events and their corresponding handlers.
     Allows for event registration, emission, and asynchronous processing of events.
     """
-    def __init__(self):
+    def __init__(self, automation_engine):
         self.handlers = defaultdict(list)  # event_type -> [handler_functions]
         self.event_queue = deque() # Stores events to be processed
         self.is_running = False

@@ -45,6 +45,7 @@ This section outlines the tasks required to implement a graphical user interface
 - [ ] Conduct UI/UX testing to ensure responsiveness and adherence to the futuristic design.
 
 ## 8. Future Enhancements
+## 8. Future Enhancements
 - [x] Implement a basic root route for the API (`/`) to provide a welcome message.
 - [ ] Implement robust authentication and authorization for the API.
 - [ ] Add more detailed logging and monitoring capabilities.

@@ -1,10 +1,18 @@
 """This module defines custom exception classes and a centralized error handling mechanism."""
 import logging
+import time
+from automation.event_manager import EventManager
 
 # Configure logging
 logging.basicConfig(
     level=logging.ERROR, format="%(asctime)s - %(levelname)s - %(message)s"
 )
+
+_event_manager_instance = None
+
+def set_event_manager(manager: EventManager):
+    global _event_manager_instance
+    _event_manager_instance = manager
 
 
 class QuantumEncryptionError(Exception):
@@ -57,11 +65,30 @@ class ErrorHandler:
             logging.error("%s", full_message)
         elif level == "critical":
             logging.critical("%s", full_message)
-
+        else:
             logging.error(
                 "Invalid logging level specified: %s. Defaulting to error. %s",
                 level, full_message
             )
+            level = "error" # Ensure level is valid for event emission
+
+        # Determine error type for event payload
+        error_type = e.__class__.__name__
+
+        # Emit an event
+        if _event_manager_instance:
+            event_payload = {
+                "error_type": error_type,
+                "message": full_message,
+                "level": level,
+                "timestamp": time.time()
+            }
+            if level == "critical":
+                _event_manager_instance.emit_event("critical_error", event_payload)
+            else:
+                _event_manager_instance.emit_event("error_detected", event_payload)
+        else:
+            logging.warning("EventManager not set in ErrorHandler. Cannot emit error event.")
 
         # Re-raise a specific custom exception based on the original error or context
         if isinstance(e, KeyManagementError):
