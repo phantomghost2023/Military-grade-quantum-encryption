@@ -5,6 +5,7 @@ This section outlines the tasks required to implement a graphical user interface
 ## Module-Specific TODOs
 
 - [ ] Review and integrate tasks from [dilithium-py-KUMO/TODO.md](dilithium-py-KUMO/TODO.md)
+- [ ] Review and integrate tasks from [Refinement history/TODO.md](Refinement history/TODO.md)
 
 ## Completed Tasks
 - [x] Initial project setup and dependency management (`requirements.txt` updated).
