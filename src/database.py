@@ -1,15 +1,47 @@
 
 import psycopg2
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from src.config import Config
+import os
 
 def get_db_connection():
     conn = psycopg2.connect(Config.DATABASE_URL)
     return conn
 
 def init_db():
+    db_url = Config.DATABASE_URL
+    db_name = db_url.split('/')[-1]
+    
+    # Connect to the default 'postgres' database to create the new database
+    conn_postgres = None
+    try:
+        # Create a database URL for the 'postgres' database
+        postgres_db_url = os.path.dirname(db_url) + '/postgres'
+        conn_postgres = psycopg2.connect(postgres_db_url)
+        conn_postgres.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = conn_postgres.cursor()
+        
+        # Check if the database exists
+        cur.execute(f"SELECT 1 FROM pg_database WHERE datname = '{db_name}'")
+        exists = cur.fetchone()
+        
+        if not exists:
+            cur.execute(f'CREATE DATABASE {db_name}')
+            print(f"Database '{db_name}' created.")
+        else:
+            print(f"Database '{db_name}' already exists.")
+            
+        cur.close()
+    except Exception as e:
+        print(f"Error creating database: {e}")
+    finally:
+        if conn_postgres:
+            conn_postgres.close()
+
+    # Now connect to the newly created database to create tables
     conn = None
     try:
-        conn = get_db_connection()
+        conn = get_db_connection() # This uses Config.DATABASE_URL to connect to 'quantum_encryption'
         cur = conn.cursor()
         cur.execute('''
             CREATE TABLE IF NOT EXISTS users (
@@ -42,13 +74,14 @@ def init_db():
             );
         ''')
         conn.commit()
+        print("Tables created successfully.")
         cur.close()
     except Exception as e:
-        print(f"Error initializing database: {e}")
+        print(f"Error initializing database tables: {e}")
     finally:
         if conn:
             conn.close()
 
 if __name__ == '__main__':
     init_db()
-    print("Database initialized (users table created if not exists).")
+    print("Database initialization complete.")

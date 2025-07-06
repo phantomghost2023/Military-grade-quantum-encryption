@@ -4,8 +4,134 @@ This section outlines the tasks required to implement a graphical user interface
 
 ## Module-Specific TODOs
 
-- [ ] Review and integrate tasks from [dilithium-py-KUMO/TODO.md](dilithium-py-KUMO/TODO.md)
-- [ ] Review and integrate tasks from [Refinement history/TODO.md](Refinement history/TODO.md)
+- [x] Review and integrate tasks from [dilithium-py-KUMO/TODO.md](dilithium-py-KUMO/TODO.md)
+- [x] Review and integrate tasks from [Refinement history/TODO.md](Refinement history/TODO.md)
+- [x] Review and integrate tasks from [src/automation/TODO.md](src/automation/TODO.md)
+- [x] Review and integrate tasks from [src/frontend/TODO.md](src/frontend/TODO.md)
+
+## Frontend Module Enhancements
+
+### Core Functionality
+- [x] Create main dashboard layout
+- [x] Implement navigation system between modules
+- [x] Design authentication flow
+
+### Module Pages
+- [x] Agent Management UI
+- [x] Policy Configuration UI
+- [x] Event Monitoring UI
+- [x] KMS Integration UI
+- [x] PQC Research UI
+
+### Technical Setup
+- [x] Choose frontend framework (React)
+- [x] Set up build system (Vite)
+- [x] Configure API client for backend communication
+- [x] Implement state management
+
+### Styling
+- [x] Select UI component library (Material-UI)
+- [x] Create theme/style guide
+- [ ] Implement responsive design
+
+### Testing
+- [ ] Unit test components
+- [ ] Integration test API calls
+- [ ] End-to-end test workflows
+- [x] Review and integrate tasks from [src/automation/TODO.md](src/automation/TODO.md)
+
+## Refinement History Module Enhancements
+
+- [ ] **Tooling and Automation**
+  - [ ] Explore and evaluate existing tools or develop custom scripts for automating the generation of refinement history entries (e.g., parsing Git commit messages, integrating with issue trackers like Jira/GitHub Issues, extracting data from pull requests).
+  - [ ] Develop scripts or tools to assist in formatting, validating, and organizing refinement records, ensuring they adhere to the defined structure and immutability principles.
+  - [ ] Implement automated checks to ensure new entries are properly formatted and complete before being added to the history.
+
+- [ ] **Integration with Documentation**
+  - [ ] Determine how refinement history entries will link to or inform other project documentation (e.g., design documents, architectural decision records (ADRs), user manuals, release notes).
+  - [ ] Establish a cross-referencing mechanism to easily navigate between refinement entries and related documentation.
+  - [ ] Consider generating a high-level summary or changelog from the refinement history for release purposes.
+
+- [ ] **Review and Maintenance**
+  - [ ] Periodically review the refinement history for completeness, accuracy, and adherence to established guidelines.
+  - [ ] Implement a process for auditing the immutability of existing records to prevent accidental or malicious modifications.
+  - [ ] Define a strategy for long-term storage and accessibility of the refinement history, ensuring its integrity over the project's lifecycle.
+
+## dilithium-py-KUMO Module Enhancements
+
+- [ ] **Code Review and Refinement**
+  - [ ] Conduct a thorough code review of all module components.
+  - [ ] Refactor code for improved readability, maintainability, and adherence to Python best practices.
+  - [ ] Optimize critical sections for performance, especially cryptographic operations.
+
+- [ ] **Comprehensive Testing**
+  - [ ] Develop additional unit tests for `aes256_ctr_drbg.py`, `key_gen.py`, `ntt_helper.py`, `polynomials.py`, `shake_wrapper.py`, `sign.py`, and `verify.py`.
+  - [ ] Implement integration tests to ensure seamless interaction between module components.
+  - [ ] Create end-to-end tests for the entire Dilithium signature process (key generation, signing, verification).
+  - [ ] Add performance benchmarks for key generation, signing, and verification operations.
+
+- [ ] **Documentation**
+  - [ ] Add comprehensive docstrings to all functions, classes, and methods.
+  - [ ] Update `README.md` with detailed usage instructions, installation guide, and examples.
+  - [ ] Document the cryptographic primitives and algorithms used within the module.
+
+- [ ] **Error Handling and Robustness**
+  - [ ] Implement robust error handling mechanisms for all potential failure points.
+  - [ ] Ensure graceful degradation and informative error messages.
+
+- [ ] **Dependency Management**
+  - [ ] Review and update `requirements.txt` with precise versioning.
+  - [ ] Investigate and address any potential dependency conflicts.
+
+- [ ] **Security Enhancements**
+  - [ ] Conduct a security audit of the cryptographic implementations.
+  - [ ] Ensure adherence to best practices for secure coding in Python.
+
+- [ ] **CI/CD Integration**
+  - [ ] Integrate module tests and linters into the main project's CI/CD pipeline.
+  - [ ] Automate code quality checks and deployment processes.
+
+## Automation System Tasks
+
+### 1. Core Automation Engine
+- [x] Design the architecture for the central automation engine.
+- [x] Implement a task scheduler and dispatcher.
+- [x] Develop a mechanism for defining and executing automated workflows.
+
+### 2. Policy and Permission Management
+- [x] Design and implement a policy engine to enforce user permissions and predefined rules for automated tasks.
+- [x] Develop an interface for users to define, modify, and review automation policies.
+- [x] Implement robust access control for the automation system itself.
+
+### 3. Event-Driven Triggers
+- [ ] Identify key events within the framework (e.g., key expiration, error detection, new data arrival) that can trigger automated actions.
+- [x] Implement an event listener and processing mechanism.
+- [x] Define a system for mapping events to specific automated workflows.
+
+### 4. Integration with Existing Modules
+- [x] Integrate with the KMS for automated key management operations (e.g., rotation, revocation).
+- [x] Integrate with the ErrorHandler for automated error diagnosis, logging, and potential resolution.
+- [x] Develop APIs or interfaces for the automation engine to interact with PQC and QKD simulation modules.
+
+### 5. User Interface for Control and Oversight
+- [x] Design a dashboard for monitoring automated tasks and system status. (API groundwork laid)
+- [x] Implement controls for starting, stopping, pausing, and resuming automated workflows. (API groundwork laid)
+- [x] Develop a view for reviewing audit trails and logs of automated actions. (Basic API for task history implemented; full audit trail requires persistent logging solution.)
+- [x] Provide mechanisms for user intervention and override of automated decisions. (Manual task triggering via API implemented.)
+
+### 6. Advanced Capabilities (Future)
+- [ ] Explore integration of AI/ML for predictive maintenance, adaptive security, and intelligent error resolution.
+- [ ] Implement self-healing capabilities for common issues.
+
+### 7. Security and Auditing
+- [ ] Conduct thorough security reviews of the automation system.
+- [ ] Implement comprehensive logging and auditing for all automated actions.
+- [ ] Ensure non-repudiation and integrity of automated operations.
+
+### 8. Testing
+- [ ] Develop unit and integration tests for the automation engine and its components.
+- [ ] Create end-to-end tests for automated workflows.
+- [ ] Conduct security testing and penetration testing for the automation system.
 
 ## Completed Tasks
 - [x] Initial project setup and dependency management (`requirements.txt` updated).
