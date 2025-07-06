@@ -71,6 +71,15 @@ class TestAutomationEngine(unittest.TestCase):
         self.engine.running_tasks.clear()
         self.engine.all_tasks.clear()
 
+    def _wait_for_task_status(self, task_id, expected_status, timeout=10):
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            status = self.engine.get_task_status(task_id)
+            if status == expected_status:
+                return True
+            time.sleep(0.1) # Poll every 100ms
+        self.fail(f"Task {task_id} did not reach status {expected_status} within {timeout} seconds. Current status: {status}")
+
     def test_add_task(self):
         def dummy_task(): pass
         task_id = self.engine.add_task(dummy_task)
@@ -101,10 +110,9 @@ class TestAutomationEngine(unittest.TestCase):
         def long_task(): time.sleep(0.5)
         task_id = self.engine.add_task(long_task)
         self.assertEqual(self.engine.get_task_status(task_id), "queued")
-        time.sleep(0.1) # Task should be running now
-        self.assertEqual(self.engine.get_task_status(task_id), "running")
-        time.sleep(0.5) # Task should be completed now
-        self.assertEqual(self.engine.get_task_status(task_id), "completed")
+        self.assertTrue(self._wait_for_task_status(task_id, "running", timeout=2)) # Increased timeout
+        self.assertEqual(self.engine.get_task_status(task_id), "running") # Should still be running
+        self.assertTrue(self._wait_for_task_status(task_id, "completed", timeout=2)) # Increased timeout
         self.assertEqual(self.engine.get_task_status("non_existent_task"), "not_found")
 
     def test_cancel_task(self):

@@ -83,7 +83,7 @@ class AutomationEngine:
                 task = self.task_queue.popleft()
                 self._execute_task(task)
             else:
-                time.sleep(0.1)  # Wait a bit if no tasks are available
+                time.sleep(0.01)  # Wait a bit if no tasks are available
 
     def start(self):
         """

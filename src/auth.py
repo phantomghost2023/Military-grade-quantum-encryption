@@ -24,6 +24,13 @@ def create_user(username, password, role='user'):
         user_id = cur.fetchone()[0]
         conn.commit()
         cur.close()
+
+        # Create a default user profile for the new user
+        default_display_name = username  # Use username as default display name
+        profile_created = data_manager.create_user_profile(user_id, default_display_name)
+        if not profile_created:
+            print(f"Warning: Failed to create profile for user {username}")
+
         return user_id
     except Exception as e:
         print(f"Error creating user: {e}")

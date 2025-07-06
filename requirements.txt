@@ -1,1 +1,4 @@
 Flask
+cryptography
+pycryptodome
+flake8

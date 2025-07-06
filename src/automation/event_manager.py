@@ -17,6 +17,7 @@ class EventManager:
         self.is_running = False
         self.worker_thread = None
         self.lock = threading.Lock() # To protect access to event_queue
+        self.automation_engine = automation_engine # Store AutomationEngine instance
         logging.info("EventManager initialized.")
 
     def register_handler(self, event_type, handler_function):
@@ -49,6 +50,9 @@ class EventManager:
                 event_type = event["type"]
                 payload = event["payload"]
                 logging.info(f"Processing event '{event_type}'...")
+                # Trigger tasks registered in the AutomationEngine for this event type
+                self.automation_engine.trigger_event_tasks(event_type, payload)
+
                 if event_type in self.handlers:
                     for handler in self.handlers[event_type]:
                         try:

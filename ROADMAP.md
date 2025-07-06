@@ -71,7 +71,7 @@ This roadmap outlines the key phases and milestones for developing the conceptua
 
 **Goal:** Build a secure and robust Key Management System.
 
-*   **3.1 Key Generation & Storage:**
+*   **3.1 Key Generation & Storage:** [x]
     *   Implement secure key generation procedures for all key types (PQC, symmetric, classical).
     *   Develop secure storage mechanisms for private keys (e.g., encrypted storage, integration with secure enclaves/HSMs).
 *   **3.2 Key Distribution & Exchange:**
@@ -83,7 +83,7 @@ This roadmap outlines the key phases and milestones for developing the conceptua
     *   Implement robust access control mechanisms for the KMS, ensuring only authorized entities can access and manage keys.
 *   **3.5 Auditing & Logging:**
     *   Implement comprehensive auditing and logging for all key management operations.
-*   **3.6 API Definition (KMS):**
+*   **3.6 API Definition (KMS):** [x]
     *   Define the public API for interacting with the KMS.
 
 ## Phase 4: Application Integration & Testing
