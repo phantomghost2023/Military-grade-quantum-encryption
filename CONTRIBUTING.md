@@ -2,6 +2,12 @@
 
 We welcome contributions to this project! To ensure a smooth and efficient collaboration, please follow these guidelines.
 
+## Refinement Process
+
+This project follows a structured refinement process to ensure all changes are documented consistently and transparently. Before making any contributions, you must familiarize yourself with this process.
+
+**Please read the [Refinement Process](./REFINEMENT_PROCESS.md) documentation for detailed guidelines, workflows, and templates.**
+
 ## How to Contribute
 
 1.  **Fork the Repository**: Start by forking the project repository to your GitHub account.
