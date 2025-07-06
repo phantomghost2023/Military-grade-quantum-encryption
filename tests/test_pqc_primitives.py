@@ -1,72 +1,57 @@
 import unittest
-from src.pqc_primitives import Kyber, Dilithium
-
+from src.pqc import Kyber, Dilithium
 
 class TestKyber(unittest.TestCase):
     def test_kyber_init(self):
-        # Test initialization for different security levels
-        kyber512 = Kyber(security_level=1)
-        self.assertEqual(kyber512.security_level, 1)
-        self.assertIn("n", kyber512.params)
+        kyber512 = Kyber(security_level="512")
+        self.assertIsInstance(kyber512, Kyber)
+        self.assertEqual(kyber512.security_level, "512")
 
-        kyber768 = Kyber(security_level=2)
-        self.assertEqual(kyber768.security_level, 2)
-        self.assertIn("n", kyber768.params)
-
-        kyber1024 = Kyber(security_level=3)
-        self.assertEqual(kyber1024.security_level, 3)
-        self.assertIn("n", kyber1024.params)
-
-        # Test default security level
-        kyber_default = Kyber()
-        self.assertEqual(kyber_default.security_level, 3)
+        with self.assertRaises(ValueError):
+            Kyber(security_level="invalid")
 
     def test_kyber_keypair_generation(self):
-        kyber = Kyber(security_level=1)
-        with self.assertRaises(NotImplementedError):
-            kyber.generate_keypair()
+        kyber = Kyber()
+        pk, sk = kyber.generate_keypair()
+        self.assertIsInstance(pk, bytes)
+        self.assertIsInstance(sk, bytes)
+        self.assertGreater(len(pk), 0)
+        self.assertGreater(len(sk), 0)
 
     def test_kyber_encapsulation_decapsulation(self):
-        kyber = Kyber(security_level=1)
-        # These methods are placeholders, so we just test they don't crash
-        kyber.encapsulate(None)
-        kyber.decapsulate(None, None)
-
+        kyber = Kyber()
+        pk, sk = kyber.generate_keypair()
+        ciphertext, shared_secret_sender = kyber.encapsulate(pk)
+        shared_secret_receiver = kyber.decapsulate(sk, ciphertext)
+        self.assertEqual(shared_secret_sender, shared_secret_receiver)
+        self.assertIsInstance(shared_secret_sender, bytes)
 
 class TestDilithium(unittest.TestCase):
     def test_dilithium_init(self):
-        # Test initialization for different security levels
-        dilithium2 = Dilithium(security_level=2)
-        self.assertEqual(dilithium2.security_level, 2)
-        self.assertIn("n", dilithium2.params)
-
-        dilithium3 = Dilithium(security_level=3)
-        self.assertEqual(dilithium3.security_level, 3)
-        self.assertIn("n", dilithium3.params)
-
-        dilithium5 = Dilithium(security_level=5)
-        self.assertEqual(dilithium5.security_level, 5)
-        self.assertIn("n", dilithium5.params)
-
-        # Test default security level
-        dilithium_default = Dilithium()
-        self.assertEqual(dilithium_default.security_level, 3)
+        dilithium = Dilithium()
+        self.assertIsInstance(dilithium, Dilithium)
 
     def test_dilithium_keypair_generation(self):
-        dilithium = Dilithium(security_level=2)
-        # This method is a placeholder, so we just test it doesn't crash
-        dilithium.generate_keypair()
+        dilithium = Dilithium()
+        vk, sk = dilithium.generate_keypair()
+        self.assertIsInstance(vk, bytes)
+        self.assertIsInstance(sk, bytes)
+        self.assertGreater(len(vk), 0)
+        self.assertGreater(len(sk), 0)
 
     def test_dilithium_signing_verification(self):
-        dilithium = Dilithium(security_level=2)
-        message = b"This is a test message."
+        dilithium = Dilithium()
+        vk, sk = dilithium.generate_keypair()
+        message = b"test message"
+        signature = dilithium.sign(sk, message)
+        self.assertTrue(dilithium.verify(vk, message, signature))
 
-        # Test signing (placeholder)
-        dilithium.sign(None, message)
+        # Test with wrong message
+        self.assertFalse(dilithium.verify(vk, b"wrong message", signature))
 
-        # Test verification (raises NotImplementedError)
-        with self.assertRaises(NotImplementedError):
-            dilithium.verify(None, message, None)
+        # Test with wrong key
+        vk_new, _ = dilithium.generate_keypair()
+        self.assertFalse(dilithium.verify(vk_new, message, signature))
 
 
 if __name__ == "__main__":

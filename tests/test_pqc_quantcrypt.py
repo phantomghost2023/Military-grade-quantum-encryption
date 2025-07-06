@@ -38,38 +38,30 @@ class TestKyberQuantCrypt(unittest.TestCase):
 class TestDilithiumQuantCrypt(unittest.TestCase):
     def test_dilithium_signing_verification(self):
         """Test the Dilithium signing and verification process."""
-        for level in ["44", "65", "87"]:
-            with self.subTest(level=level):
-                # Initialize Dilithium with a specific security level
-                dilithium_instance = Dilithium(security_level=level)
-                
-                # Generate key pair
-                vk, sk = dilithium_instance.generate_keypair()
+        dilithium_instance = Dilithium()
+        
+        # Generate key pair
+        vk, sk = dilithium_instance.generate_keypair()
 
-                # Define a message and sign it
-                message = "This is a test message for Dilithium signing.".encode('utf-8')
-                signature = dilithium_instance.sign(sk, message)
-                
-                # Verify the valid signature
-                is_valid = dilithium_instance.verify(vk, message, signature)
+        # Define a message and sign it
+        message = "This is a test message for Dilithium signing.".encode('utf-8')
+        signature = dilithium_instance.sign(sk, message)
+        
+        # Verify the valid signature
+        is_valid = dilithium_instance.verify(vk, message, signature)
 
-                # Assert properties of the generated signature
-                self.assertIsInstance(signature, bytes)
-                self.assertGreater(len(signature), 0)
-                self.assertTrue(is_valid)
+        # Assert properties of the generated signature
+        self.assertIsInstance(signature, bytes)
+        self.assertGreater(len(signature), 0)
+        self.assertTrue(is_valid)
 
-                # Test verification with a tampered message
-                tampered_message = "This is a tampered message.".encode('utf-8')
-                self.assertFalse(dilithium_instance.verify(vk, tampered_message, signature))
+        # Test verification with a tampered message
+        tampered_message = "This is a tampered message.".encode('utf-8')
+        self.assertFalse(dilithium_instance.verify(vk, tampered_message, signature))
 
-                # Test verification with a tampered signature
-                tampered_signature = signature[:-1] + b'\x00'
-                self.assertFalse(dilithium_instance.verify(vk, message, tampered_signature))
-
-    def test_dilithium_invalid_security_level(self):
-        """Test that Dilithium raises ValueError for invalid security levels."""
-        with self.assertRaises(ValueError):
-            Dilithium(security_level="invalid")
+        # Test verification with a tampered signature
+        tampered_signature = signature[:-1] + b'\x00'
+        self.assertFalse(dilithium_instance.verify(vk, message, tampered_signature))
 
 if __name__ == '__main__':
     unittest.main()

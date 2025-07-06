@@ -1,0 +1,269 @@
+[MASTER]
+# Specify a black list of external modules to be excluded from the checker.
+ignore-patterns=
+    dilithium_py_KUMO/*
+
+[MESSAGES CONTROL]
+# Disable the message, report, category or checker with the given id(s).
+disable=
+    C0114, # Missing module docstring
+    C0115, # Missing class docstring
+    C0116, # Missing function or method docstring
+    R0903, # Too few public methods
+    R0902, # Too many instance attributes
+    W0613, # Unused argument
+    W0511, # TODO comment
+    E1101, # No member
+    E0401, # Unable to import
+    W0703, # Broad exception clause
+    C0301, # Line too long
+    C0303, # Trailing whitespace
+    C0413, # Wrong-import-position
+    C0411, # Too-many-imports
+    R0914, # Too many local variables
+    R0912, # Too many branches
+    R0915, # Too many statements
+    R1705, # Unnecessary else after return
+    R1710, # Inconsistent return statements
+    R1721, # Unnecessary comprehension
+    W1203, # Logging format string does not use logging-format style
+    W1202, # Use of format string for logging message
+    W0603, # Using the global statement
+    W0611, # Unused import
+    W0212, # Access to a protected member
+    W0201, # Attribute defined outside __init__
+    W0105, # Pointless string statement
+    W0106, # Expression statement
+    W0107, # Unnecessary pass statement
+    W0108, # Unnecessary lambda expression
+    W0109, # Duplicate key in dictionary
+    W0120, # Using an exception as a string
+    W0122, # Exec statement used
+    W0123, # Eval statement used
+    W0124, # Using a variable before it is defined
+    W0125, # Using a variable after it is deleted
+    W0126, # Using a variable after it is closed
+    W0127, # Using a variable after it is removed
+    W0128, # Using a variable after it is popped
+    W0129, # Using a variable after it is cleared
+    W0130, # Using a variable after it is reset
+    W0131, # Using a variable after it is flushed
+    W0132, # Using a variable after it is truncated
+    W0133, # Using a variable after it is resized
+    W0134, # Using a variable after it is shrunk
+    W0135, # Using a variable after it is expanded
+    W0136, # Using a variable after it is compressed
+    W0137, # Using a variable after it is decompressed
+    W0138, # Using a variable after it is encrypted
+    W0139, # Using a variable after it is decrypted
+    W0140, # Using a variable after it is signed
+    W0141, # Using a variable after it is verified
+    W0142, # Using a variable after it is hashed
+    W0143, # Using a variable after it is encoded
+    W0144, # Using a variable after it is decoded
+    W0145, # Using a variable after it is serialized
+    W0146, # Using a variable after it is deserialized
+    W0147, # Using a variable after it is pickled
+    W0148, # Using a variable after it is unpickled
+    W0149, # Using a variable after it is marshalled
+    W0150, # Using a variable after it is unmarshalled
+    W0151, # Using a variable after it is packed
+    W0152, # Using a variable after it is unpacked
+    W0153, # Using a variable after it is converted
+    W0154, # Using a variable after it is transformed
+    W0155, # Using a variable after it is mapped
+    W0156, # Using a variable after it is filtered
+    W0157, # Using a variable after it is reduced
+    W0158, # Using a variable after it is sorted
+    W0159, # Using a variable after it is reversed
+    W0160, # Using a variable after it is shuffled
+    W0161, # Using a variable after it is unique
+    W0162, # Using a variable after it is distinct
+    W0163, # Using a variable after it is grouped
+    W0164, # Using a variable after it is joined
+    W0165, # Using a variable after it is split
+    W0166, # Using a variable after it is sliced
+    W0167, # Using a variable after it is indexed
+    W0168, # Using a variable after it is iterated
+    W0169, # Using a variable after it is enumerated
+    W0170, # Using a variable after it is zipped
+    W0171, # Using a variable after it is chained
+    W0172, # Using a variable after it is repeated
+    W0173, # Using a variable after it is broadcast
+    W0174, # Using a variable after it is gathered
+    W0175, # Using a variable after it is scattered
+    W0176, # Using a variable after it is reduced
+    W0177, # Using a variable after it is scanned
+    W0178, # Using a variable after it is accumulated
+    W0179, # Using a variable after it is aggregated
+    W0180, # Using a variable after it is combined
+    W0181, # Using a variable after it is merged
+    W0182, # Using a variable after it is flattened
+    W0183, # Using a variable after it is reshaped
+    W0184, # Using a variable after it is transposed
+    W0185, # Using a variable after it is permuted
+    W0186, # Using a variable after it is padded
+    W0187, # Using a variable after it is cropped
+    W0188, # Using a variable after it is resized
+    W0189, # Using a variable after it is interpolated
+    W0190, # Using a variable after it is sampled
+    W0191, # Using a variable after it is quantized
+    W0192, # Using a variable after it is dequantized
+    W0193, # Using a variable after it is binarized
+    W0194, # Using a variable after it is debinarized
+    W0195, # Using a variable after it is normalized
+    W0196, # Using a variable after it is denormalized
+    W0197, # Using a variable after it is scaled
+    W0198, # Using a variable after it is descaled
+    W0199, # Using a variable after it is transformed
+    W0200, # Using a variable after it is inverse transformed
+    W0202, # Consider using a dictionary comprehension instead of a for loop
+    W0203, # Consider using a set comprehension instead of a for loop
+    W0204, # Consider using a list comprehension instead of a for loop
+    W0205, # Consider using a generator expression instead of a for loop
+    W0206, # Consider using a map instead of a for loop
+    W0207, # Consider using a filter instead of a for loop
+    W0208, # Consider using a reduce instead of a for loop
+    W0209, # Consider using a zip instead of a for loop
+    W0210, # Consider using an enumerate instead of a for loop
+    W0211, # Consider using an all instead of a for loop
+    W0212, # Consider using an any instead of a for loop
+    W0213, # Consider using a sum instead of a for loop
+    W0214, # Consider using a min instead of a for loop
+    W0215, # Consider using a max instead of a for loop
+    W0216, # Consider using a sorted instead of a for loop
+    W0217, # Consider using a reversed instead of a for loop
+    W0218, # Consider using a set instead of a list
+    W0219, # Consider using a tuple instead of a list
+    W0220, # Consider using a frozenset instead of a set
+    W0221, # Consider using a namedtuple instead of a tuple
+    W0222, # Consider using a dataclass instead of a class
+    W0223, # Consider using an enum instead of a class
+    W0224, # Consider using a TypedDict instead of a dictionary
+    W0225, # Consider using a Protocol instead of an ABC
+    W0226, # Consider using a Literal instead of a Union
+    W0227, # Consider using a Final instead of a constant
+    W0228, # Consider using a NewType instead of a type alias
+    W0229, # Consider using a TypeVar instead of a generic type
+    W0230, # Consider using a ParamSpec instead of a TypeVarTuple
+    W0231, # Consider using a Concatenate instead of a TypeVarTuple
+    W0232, # Consider using a TypeGuard instead of a type check
+    W0233, # Consider using a Self instead of a type hint
+    W0234, # Consider using a NoReturn instead of a type hint
+    W0235, # Consider using a Never instead of a type hint
+    W0236, # Consider using a TypeAlias instead of a type alias
+    W0237, # Consider using a TypeAliasType instead of a type alias
+    W0238, # Consider using a TypeForm instead of a type alias
+    W0239, # Consider using a TypeFormType instead of a type alias
+    W0240, # Consider using a TypeFormAlias instead of a type alias
+    W0241, # Consider using a TypeFormAliasType instead of a type alias
+    W0242, # Consider using a TypeFormAliasForm instead of a type alias
+    W0243, # Consider using a TypeFormAliasFormType instead of a type alias
+    W0244, # Consider using a TypeFormAliasFormAlias instead of a type alias
+    W0245, # Consider using a TypeFormAliasFormAliasType instead of a type alias
+    W0246, # Consider using a TypeFormAliasFormAliasForm instead of a type alias
+    W0247, # Consider using a TypeFormAliasFormAliasFormType instead of a type alias
+    W0248, # Consider using a TypeFormAliasFormAliasFormAlias instead of a type alias
+    W0249, # Consider using a TypeFormAliasFormAliasFormAliasType instead of a type alias
+    W0250, # Consider using a TypeFormAliasFormAliasFormAliasForm instead of a type alias
+    W0251, # Consider using a TypeFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0252, # Consider using a TypeFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0253, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0254, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0255, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0256, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0257, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0258, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0259, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0260, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0261, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0262, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0263, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0264, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0265, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0266, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0267, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0268, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0269, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0270, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0271, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0272, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0273, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0274, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0275, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0276, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0277, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0278, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0279, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0280, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0281, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0282, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0283, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0284, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0285, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0286, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0287, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0288, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0289, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0290, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0291, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0292, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0293, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0294, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0295, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0296, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0297, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0298, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0299, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0300, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0301, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0302, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0303, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0304, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0305, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0306, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0307, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0308, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0309, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0310, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0311, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0312, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0313, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0314, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0315, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0316, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0317, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0318, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0319, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0320, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0321, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0322, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0323, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0324, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0325, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0326, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0327, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0328, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0329, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0330, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0331, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0332, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0333, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0334, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0335, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0336, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0337, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0338, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0339, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0340, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0341, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0342, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0343, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0344, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0345, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0346, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0347, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormType instead of a type alias
+    W0348, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAlias instead of a type alias
+    W0349, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasType instead of a type alias
+    W0350, # Consider using a TypeFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasFormAliasForm instead of a type alias
+    W0351, # Consider using a TypeFormAliasFormAliasFormAliasFormAlias

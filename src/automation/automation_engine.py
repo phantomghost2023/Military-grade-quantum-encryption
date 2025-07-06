@@ -1,7 +1,13 @@
 import threading
 import time
 import logging
+import threading
 from collections import deque
+from src.automation.ai_ml_integration import AIMLIntegration
+from src.automation.self_healing import SelfHealing
+from src.automation.performance_monitoring import PerformanceMonitor
+from src.automation.chaos_engineering import ChaosEngineer
+from src.disaster_recovery import DisasterRecovery
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -14,9 +20,17 @@ class AutomationEngine:
     def __init__(self):
         self.task_queue = deque()  # Stores tasks to be executed
         self.running_tasks = {}  # Stores currently running tasks
+        self.all_tasks = {} # Stores all tasks, including completed and failed
         self.task_id_counter = 0
         self.is_running = False
         self.worker_thread = None
+        self.event_handlers = {} # For event-driven tasks
+        self.policies = {} # Stores defined policies
+        self.ai_ml_integration = AIMLIntegration()
+        self.self_healing = SelfHealing(automation_engine=self) # Pass self for task scheduling
+        self.performance_monitor = PerformanceMonitor()
+        self.chaos_engineer = ChaosEngineer(self)
+        self.disaster_recovery = DisasterRecovery()
         logging.info("AutomationEngine initialized.")
 
     def _generate_task_id(self):
@@ -34,9 +48,12 @@ class AutomationEngine:
             "function": task_function,
             "args": args,
             "kwargs": kwargs,
-            "status": "queued"
+            "status": "queued",
+            "result": None,
+            "error": None
         }
         self.task_queue.append(task)
+        self.all_tasks[task_id] = task # Store in all_tasks
         logging.info(f"Task '{task_id}' added to queue.")
         return task_id
 
@@ -47,11 +64,13 @@ class AutomationEngine:
         task_id = task["id"]
         logging.info(f"Executing task '{task_id}'...")
         task["status"] = "running"
+        task["start_time"] = time.time()
         self.running_tasks[task_id] = task
 
         try:
             result = task["function"](*task["args"], **task["kwargs"])
             task["status"] = "completed"
+            task["result"] = result
             logging.info(f"Task '{task_id}' completed successfully. Result: {result}")
             return result
         except Exception as e:
@@ -61,8 +80,18 @@ class AutomationEngine:
             # In a real system, this would trigger more sophisticated error handling
             return None
         finally:
+            task["end_time"] = time.time()
             if task_id in self.running_tasks:
                 del self.running_tasks[task_id]
+            # Basic error handling to trigger self-healing or AI/ML analysis
+            if task["status"] == "failed":
+                logging.error(f"Task '{task_id}' failed. Triggering self-healing/AI-ML analysis.")
+                # Example: Trigger self-healing for specific error types
+                if "database_connection_failed" in task["error"].lower():
+                    self.self_healing.check_and_heal({"type": "database_connection_failure", "details": task["error"]})
+                # Example: Log for AI/ML analysis for predictive maintenance
+                self.ai_ml_integration.predict_maintenance_issue(task["error"])
+                self.ai_ml_integration.resolve_error_intelligently(task["error"])
 
     def _worker_loop(self):
         """
@@ -104,25 +133,164 @@ class AutomationEngine:
         """
         Retrieves the current status of a task.
         """
-        # This is a simplified approach. In a real system, task status would be persisted.
-        for task in list(self.task_queue) + list(self.running_tasks.values()):
-            if task["id"] == task_id:
-                return task["status"]
+        task = self.all_tasks.get(task_id)
+        if task:
+            return task["status"]
         return "not_found"
 
-    def list_tasks(self):
+    def get_all_tasks(self):
         """
-        Lists all tasks currently in the queue or running.
+        Returns a dictionary of all tasks managed by the engine.
         """
-        return {
-            "queued": [t["id"] for t in self.task_queue],
-            "running": [t["id"] for t in self.running_tasks.values()]
+        return self.all_tasks
+
+    def cancel_task(self, task_id):
+        """
+        Attempts to cancel a queued task.
+        """
+        task = self.all_tasks.get(task_id)
+        if task and task["status"] == "queued":
+            # Remove from queue if present
+            for i, q_task in enumerate(self.task_queue):
+                if q_task["id"] == task_id:
+                    del self.task_queue[i]
+                    break
+            task["status"] = "cancelled"
+            logging.info(f"Task '{task_id}' cancelled.")
+            return True
+        elif task and task["status"] == "running":
+            logging.warning(f"Task '{task_id}' is running and cannot be cancelled.")
+            return False
+        logging.warning(f"Task '{task_id}' cannot be cancelled (not found or not queued).")
+        return False
+
+    def add_policy(self, policy_id, description, rules, actions):
+        """
+        Adds a new policy to the engine.
+        """
+        self.policies[policy_id] = {
+            "policy_id": policy_id,
+            "description": description,
+            "rules": rules,
+            "actions": actions
         }
+        logging.info(f"Policy '{policy_id}' added.")
+
+    def get_policies(self):
+        """
+        Retrieves all stored policies.
+        """
+        return list(self.policies.values())
+
+    def trigger_predictive_maintenance(self, data):
+        """
+        Triggers predictive maintenance analysis using the AI/ML integration.
+        """
+        return self.ai_ml_integration.predict_maintenance_issue(data)
+
+    def trigger_intelligent_error_resolution(self, error_details):
+        """
+        Triggers intelligent error resolution using the AI/ML integration.
+        """
+        return self.ai_ml_integration.resolve_error_intelligently(error_details)
+
+    def run_backup(self, data_sources, backup_name="manual_backup"):
+        """
+        Triggers a backup operation using the DisasterRecovery module.
+        """
+        logging.info(f"Initiating backup: {backup_name}")
+        for source in data_sources:
+            self.disaster_recovery.add_data_source(source)
+        backup_path = self.disaster_recovery.create_backup(backup_name)
+        if backup_path:
+            logging.info(f"Backup '{backup_name}' created at: {backup_path}")
+            return backup_path
+        else:
+            logging.error(f"Failed to create backup '{backup_name}'.")
+            return None
+
+    def run_restore(self, backup_name, restore_path):
+        """
+        Triggers a restore operation using the DisasterRecovery module.
+        """
+        logging.info(f"Initiating restore from backup: {backup_name} to {restore_path}")
+        success = self.disaster_recovery.restore_backup(backup_name, restore_path)
+        if success:
+            logging.info(f"Restore from '{backup_name}' to '{restore_path}' completed successfully.")
+        else:
+            logging.error(f"Failed to restore from backup '{backup_name}'.")
+        return success
+
+    def list_backups(self):
+        """
+        Lists available backups.
+        """
+        return self.disaster_recovery.list_backups()
+
+    def trigger_self_healing(self, issue_details):
+        """
+        Triggers self-healing actions based on detected issues.
+        """
+        self.self_healing.check_and_heal(issue_details)
+
+    def register_event_task(self, event_type, task_function, *args, **kwargs):
+        """
+        Registers a task to be executed when a specific event occurs.
+        """
+
+    def execute_task_with_monitoring(self, task_name, task_func, *args, **kwargs):
+        """
+        Executes a task and measures its performance using the PerformanceMonitor.
+        """
+        logging.info(f"[AutomationEngine] Executing task '{task_name}' with performance monitoring...")
+        # Apply the decorator to the task function dynamically
+        monitored_task_func = self.performance_monitor.measure_execution_time(task_func)
+        return monitored_task_func(*args, **kwargs)
+
+    def get_performance_metrics(self):
+        """
+        Returns the performance metrics collected by the PerformanceMonitor.
+        """
+        return self.performance_monitor.get_metrics()
+
+    def reset_performance_metrics(self):
+        """
+        Resets the performance metrics collected by the PerformanceMonitor.
+        """
+        self.performance_monitor.reset_metrics()
+        if event_type not in self.event_handlers:
+            self.event_handlers[event_type] = []
+        self.event_handlers[event_type].append({
+            "function": task_function,
+            "args": args,
+            "kwargs": kwargs
+        })
+        logging.info(f"Task registered for event '{event_type}'.")
+
+    def run_chaos_experiment(self, experiment_name, **kwargs):
+        """Runs a specified chaos engineering experiment."""
+        return self.chaos_engineer.run_experiment(experiment_name, **kwargs)
+
+    def integrate_chaos_with_task(self, task_id, experiment_name, **kwargs):
+        """Integrates a chaos experiment with a specific task."""
+        return self.chaos_engineer.integrate_with_automation_engine(task_id, experiment_name, **kwargs)
+
+    def trigger_event_tasks(self, event_type, payload=None):
+        """
+        Triggers all registered tasks for a given event type.
+        """
+        logging.info(f"Event '{event_type}' triggered with payload: {payload}")
+        if event_type in self.event_handlers:
+            for handler in self.event_handlers[event_type]:
+                # Add event-triggered tasks to the main task queue
+                self.add_task(handler["function"], *handler["args"], event_payload=payload, **handler["kwargs"])
+        else:
+            logging.info(f"No handlers registered for event '{event_type}'.")
 
 # Example Usage (for demonstration and testing)
 if __name__ == "__main__":
-    def sample_task(name, duration):
-        logging.info(f"Task '{name}' started. Will run for {duration} seconds.")
+    def sample_task(name, duration, event_payload=None):
+        logging.info(f"Task '{name}' started. Will run for {duration} seconds. Event Payload: {event_payload}")
         time.sleep(duration)
         logging.info(f"Task '{name}' finished.")
         return f"Task {name} completed"
@@ -132,11 +300,18 @@ if __name__ == "__main__":
 
     task1_id = engine.add_task(sample_task, "Task A", 2)
     task2_id = engine.add_task(sample_task, "Task B", 1)
-    engine.add_task(lambda: 1/0, "Error Task") # Task designed to fail
+    engine.add_task(lambda: 1/0, "Error Task", 0) # Task designed to fail
 
     time.sleep(0.5) # Give some time for tasks to start
     logging.info(f"Status of Task A: {engine.get_task_status(task1_id)}")
     logging.info(f"Status of Task B: {engine.get_task_status(task2_id)}")
+
+    # Test event-driven tasks
+    def event_triggered_task(payload):
+        logging.info(f"Event-triggered task received payload: {payload}")
+
+    engine.register_event_task("user_login", event_triggered_task)
+    engine.trigger_event_tasks("user_login", {"username": "test_user", "timestamp": time.time()})
 
     time.sleep(3) # Wait for tasks to potentially finish
 
@@ -145,5 +320,12 @@ if __name__ == "__main__":
     logging.info(f"Status of Error Task: {engine.get_task_status('task_3')}")
 
     logging.info(f"Current tasks: {engine.list_tasks()}")
+    logging.info(f"All tasks: {engine.get_all_tasks()}")
+
+    # Test cancellation
+    task4_id = engine.add_task(sample_task, "Task C", 10)
+    logging.info(f"Status of Task C: {engine.get_task_status(task4_id)}")
+    engine.cancel_task(task4_id)
+    logging.info(f"Status of Task C after cancellation: {engine.get_task_status(task4_id)}")
 
     engine.stop()

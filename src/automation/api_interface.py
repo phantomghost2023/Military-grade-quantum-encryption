@@ -6,10 +6,10 @@ from flask import Flask, request, jsonify
 # Add the project root to the sys.path to allow absolute imports
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 sys.path.append(project_root)
-from automation.automation_engine import AutomationEngine
-from automation.policy_manager import PolicyManager
-from automation.event_manager import EventManager
-from automation.agent_manager import AgentManager
+from src.automation.automation_engine import AutomationEngine
+from src.automation.policy_manager import PolicyManager
+from src.automation.event_manager import EventManager
+from src.automation.agent_manager import AgentManager
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -268,14 +268,14 @@ if __name__ == '__main__':
     engine.register_event_task("new_key_needed", automated_key_generation, key_type="hybrid") # Example
 
     # Register error automation tasks
-    from automation.error_automation_tasks import automated_error_logging, automated_admin_notification, automated_system_restart_attempt
+    from src.automation.error_automation_tasks import automated_error_logging, automated_admin_notification, automated_system_restart_attempt
     engine.register_event_task("error_detected", automated_error_logging)
     engine.register_event_task("critical_error", automated_error_logging)
     engine.register_event_task("critical_error", automated_admin_notification)
     engine.register_event_task("critical_error", automated_system_restart_attempt)
 
     # Register error automation tasks
-    from automation.error_automation_tasks import automated_error_logging, automated_admin_notification, automated_system_restart_attempt
+    from src.automation.error_automation_tasks import automated_error_logging, automated_admin_notification, automated_system_restart_attempt
     engine.register_event_task("error_detected", automated_error_logging)
     engine.register_event_task("critical_error", automated_error_logging)
     engine.register_event_task("critical_error", automated_admin_notification)

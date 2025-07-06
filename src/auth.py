@@ -4,6 +4,9 @@ import jwt
 import datetime
 from src.config import Config
 from src.database import get_db_connection
+from src.data_manager import DataManager
+
+data_manager = DataManager()
 
 def hash_password(password):
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')

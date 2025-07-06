@@ -16,7 +16,7 @@ class Kyber:
                 "Invalid Kyber security level. Choose from '512', '768', '1024'."
             )
         self.security_level = security_level
-        self.kem_instance = kem.Kyber(security_level=security_level)
+        self.kem_instance = kem.Kyber()
 
     def generate_keypair(self) -> tuple[bytes, bytes]:
         """

@@ -90,7 +90,7 @@ class TestAutomationEngine(unittest.TestCase):
     def test_task_execution_success(self):
         mock_function = MagicMock(return_value="success")
         task_id = self.engine.add_task(mock_function)
-        time.sleep(0.1) # Give worker thread time to process
+        self.assertTrue(self._wait_for_task_status(task_id, "completed", timeout=2)) # Give worker thread time to process
         self.assertEqual(self.engine.all_tasks[task_id]["status"], "completed")
         mock_function.assert_called_once()
         self.assertEqual(self.engine.all_tasks[task_id]["result"], "success")
@@ -125,7 +125,7 @@ class TestAutomationEngine(unittest.TestCase):
     def test_cancel_running_task_fails(self):
         def long_task(): time.sleep(1)
         task_id = self.engine.add_task(long_task)
-        time.sleep(0.1) # Let it start running
+        time.sleep(0.5) # Let it start running
         self.assertFalse(self.engine.cancel_task(task_id))
         self.assertEqual(self.engine.all_tasks[task_id]["status"], "running")
 
@@ -143,17 +143,17 @@ class TestAutomationEngine(unittest.TestCase):
         self.engine.add_policy("test_policy", "desc", {"rule": "val"}, ["action"])
         policies = self.engine.get_policies()
         self.assertEqual(len(policies), 1)
-        self.assertEqual(policies[0]["name"], "test_policy")
+        self.assertEqual(policies[0]["policy_id"], "test_policy")
 
     def test_register_and_trigger_event_task(self):
         mock_event_task = MagicMock()
-        self.engine.register_event_task("test_event", mock_event_task, "arg1", kwarg1="val1")
+        self.engine.register_event_task("test_event", mock_event_task, arg1="arg1", kwarg1="val1")
         
         event_payload = {"data": "some_data"}
         self.engine.trigger_event_tasks("test_event", event_payload)
         
         time.sleep(0.1) # Give worker thread time to process
-        mock_event_task.assert_called_once_with(event_payload, "arg1", kwarg1="val1")
+        mock_event_task.assert_called_once_with(event_payload=event_payload, arg1="arg1", kwarg1="val1")
 
 class TestEventManager(unittest.TestCase):
     def setUp(self):

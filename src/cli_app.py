@@ -1,6 +1,6 @@
 """This module provides the command-line interface for the quantum encryption project."""
 import argparse
-from src.hybrid_qkd_api import hybrid_encrypt, hybrid_decrypt
+from src.hybrid_qkd_api import encrypt_data_hybrid, decrypt_data_hybrid
 from src.error_handling.error_handler import ErrorHandler, QuantumEncryptionError
 
 
@@ -13,10 +13,14 @@ def encrypt_file(input_filepath: str, output_filepath: str) -> None:
     """
     with open(input_filepath, "rb") as f:
         plaintext = f.read()
-    # For demonstration, we'll use a placeholder key pair generation.
-    # In a real scenario, this would involve KMS and PQC key generation.
-    # Assuming hybrid_encrypt returns ciphertext and necessary metadata
-    ciphertext = hybrid_encrypt(plaintext)
+    # For demonstration, we'll use a placeholder session key.
+    # In a real scenario, this would be derived from a key exchange.
+    session_key = b'\x00' * 32  # Dummy 32-byte key
+    ciphertext, nonce, tag = encrypt_data_hybrid(plaintext, session_key)
+    # In a real scenario, nonce and tag would also need to be stored/transmitted
+    # along with the ciphertext for decryption.
+    # For now, we'll concatenate them for simplicity.
+    ciphertext = nonce + tag + ciphertext
     with open(output_filepath, "wb") as f:
         f.write(ciphertext)
     print(f"File '{input_filepath}' encrypted to '{output_filepath}'.")
@@ -29,10 +33,18 @@ def decrypt_file(input_filepath: str, output_filepath: str) -> None:
         input_filepath (str): The path to the input file.
         output_filepath (str): The path to the output file.
     """
+    # For demonstration, we'll use a placeholder session key.
+    # In a real scenario, this would be derived from a key exchange.
+    session_key = b'\x00' * 32  # Dummy 32-byte key
     with open(input_filepath, "rb") as f:
-        ciphertext = f.read()
-    # Assuming hybrid_decrypt takes ciphertext and metadata to return plaintext
-    plaintext = hybrid_decrypt(ciphertext)
+        encrypted_data = f.read()
+    
+    # Assuming nonce (12 bytes) and tag (16 bytes) are prepended to the ciphertext
+    nonce = encrypted_data[:12]
+    tag = bytes(encrypted_data[12:28])
+    ciphertext = encrypted_data[28:]
+    
+    plaintext = decrypt_data_hybrid(ciphertext, nonce, tag, session_key)
     with open(output_filepath, "wb") as f:
         f.write(plaintext)
     print(f"File '{input_filepath}' decrypted to '{output_filepath}'.")

@@ -1,0 +1,6 @@
+docs: Consolidate TODO files
+
+This commit consolidates all module-specific TODO.md files into the main TODO.md file.
+
+- Integrated tasks from `Refinement history/TODO.md`, `dilithium-py-KUMO/TODO.md`, `src/automation/TODO.md`, and `src/frontend/TODO.md` into the main `TODO.md`.
+- Deleted the individual `TODO.md` files from their respective directories.

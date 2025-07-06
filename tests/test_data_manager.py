@@ -151,7 +151,7 @@ class TestDataManager(unittest.TestCase):
         self.assertEqual(retrieved_data["data_id"], data_id)
         self.assertEqual(retrieved_data["user_id"], user_id)
         self.assertEqual(retrieved_data["data_type"], data_type)
-        self.assertEqual(retrieved_data["encrypted_content"], encrypted_content)
+        self.assertEqual(bytes(retrieved_data["encrypted_content"]), encrypted_content)
         self.assertEqual(retrieved_data["encryption_metadata"], encryption_metadata)
 
     def test_delete_encrypted_data(self):

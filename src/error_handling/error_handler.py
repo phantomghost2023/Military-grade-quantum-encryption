@@ -1,7 +1,9 @@
 """This module defines custom exception classes and a centralized error handling mechanism."""
 import logging
 import time
-from automation.event_manager import EventManager
+from src.automation.event_manager import EventManager
+from src.error_handling.error_visualizer import ErrorVisualizer
+import datetime
 
 # Configure logging
 logging.basicConfig(
@@ -9,10 +11,15 @@ logging.basicConfig(
 )
 
 _event_manager_instance = None
+_error_visualizer_instance = None
 
 def set_event_manager(manager: EventManager):
     global _event_manager_instance
     _event_manager_instance = manager
+
+def set_error_visualizer(visualizer: ErrorVisualizer):
+    global _error_visualizer_instance
+    _error_visualizer_instance = visualizer
 
 
 class QuantumEncryptionError(Exception):
@@ -81,7 +88,7 @@ class ErrorHandler:
                 "error_type": error_type,
                 "message": full_message,
                 "level": level,
-                "timestamp": time.time()
+                "timestamp": datetime.datetime.now().isoformat()
             }
             if level == "critical":
                 _event_manager_instance.emit_event("critical_error", event_payload)
@@ -89,6 +96,10 @@ class ErrorHandler:
                 _event_manager_instance.emit_event("error_detected", event_payload)
         else:
             logging.warning("EventManager not set in ErrorHandler. Cannot emit error event.")
+
+        # Record error for visualization
+        if _error_visualizer_instance:
+            _error_visualizer_instance.add_error(error_type, datetime.datetime.now())
 
         # Re-raise a specific custom exception based on the original error or context
         if isinstance(e, KeyManagementError):

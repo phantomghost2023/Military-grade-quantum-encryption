@@ -2,9 +2,16 @@ import unittest
 import os
 from src.cli_app import encrypt_file, decrypt_file
 from src.secure_messaging_app import send_message, receive_message
-
+from src.auth import create_user
+from src.database import init_db
 
 class TestE2EEncryption(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        init_db()
+        create_user("Alice", "password123")
+        create_user("Bob", "password123")
 
     def setUp(self):
         self.test_file_content = (
@@ -43,15 +50,13 @@ class TestE2EEncryption(unittest.TestCase):
 
     def test_secure_messaging(self):
         print("\n--- Testing Secure Messaging ---")
-        encrypted_msg, metadata = send_message(
+        data_id = send_message(
             self.message_sender, self.message_recipient, self.test_message
         )
-        self.assertIsNotNone(encrypted_msg)
-        self.assertIsInstance(encrypted_msg, bytes)
+        self.assertIsNotNone(data_id)
+        self.assertIsInstance(data_id, str)
 
-        # Test that receive_message doesn't crash
-        # Note: receive_message prints the decrypted message but doesn't return it
-        receive_message(self.message_recipient, encrypted_msg, metadata)
+        receive_message(self.message_recipient, data_id)
         print("Secure messaging test passed.")
 
 

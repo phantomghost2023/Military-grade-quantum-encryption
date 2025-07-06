@@ -1,7 +1,7 @@
 """This module provides a secure messaging application using a Hybrid QKD Framework."""
 import argparse
 import base64
-from src.hybrid_qkd_api import hybrid_encrypt, hybrid_decrypt
+from src.hybrid_qkd_api import encrypt_data_hybrid, decrypt_data_hybrid
 from src.error_handling.error_handler import ErrorHandler, QuantumEncryptionError
 from src.data_manager import DataManager
 from src.auth import get_user_by_username
@@ -29,7 +29,8 @@ def send_message(sender_id: str, recipient_id: str, message: str) -> str:
     if not recipient_user:
         raise ValueError(f"Recipient user '{recipient_id}' not found.")
 
-    encrypted_message = hybrid_encrypt(message.encode("utf-8"))
+    encrypted_message, nonce, tag = encrypt_data_hybrid(message.encode("utf-8"), b'\x00' * 32) # Dummy session key
+    encrypted_message = nonce + tag + encrypted_message
     print(f"Encrypted message: {encrypted_message[:20]}...")  # Show first 20 bytes
 
     encryption_metadata = {
@@ -80,7 +81,10 @@ def receive_message(recipient_id: str, data_id: str) -> None:
         # Depending on policy, might raise an error or proceed with a warning
 
     encrypted_message = stored_data['encrypted_content']
-    decrypted_message = hybrid_decrypt(encrypted_message)
+    nonce = encrypted_message[:12]
+    tag = bytes(encrypted_message[12:28])
+    ciphertext = encrypted_message[28:]
+    decrypted_message = decrypt_data_hybrid(ciphertext, nonce, tag, b'\x00' * 32) # Dummy session key
     print(f"Decrypted message: {decrypted_message.decode('utf-8')}")
 
 

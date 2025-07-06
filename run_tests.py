@@ -3,17 +3,17 @@
 Simple test runner to verify the Military-Grade Quantum Encryption Framework
 modules can be imported and basic functionality works.
 """
+import sys
+import os
+
+# Add the project root to the Python path
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 def test_imports():
     """Test that all modules can be imported successfully."""
     print("Testing module imports...")
     
-    try:
-        import src.pqc_primitives
-        print("✓ pqc_primitives imported successfully")
-    except ImportError as e:
-        print(f"✗ Failed to import pqc_primitives: {e}")
-        return False
+
     
     try:
         import src.pqc
@@ -78,10 +78,10 @@ def test_basic_functionality():
     print("\nTesting basic functionality...")
     
     try:
-        from src.pqc_primitives import Kyber, Dilithium
+        from src.pqc import Kyber, Dilithium
         
         # Test Kyber initialization
-        kyber = Kyber(security_level=1)
+        kyber = Kyber(security_level="512")
         print("✓ Kyber initialization successful")
         
         # Test Dilithium initialization
@@ -115,7 +115,7 @@ def test_basic_functionality():
             
             # For testing purposes, we'll use the returned kyber_ss directly as if it was decapsulated
             
-            combined_secret = qkd_key_hex.encode('utf-8') + kyber_ss
+            combined_secret = qkd_key_hex + kyber_ss
             salt = os.urandom(16)
             info = b"test-session-key"
             session_key = derive_session_key(combined_secret, salt, info, 32)
@@ -164,7 +164,8 @@ def test_basic_functionality():
         print("✓ KMS key revocation successful")
 
         # Test hybrid key exchange with KMS
-        dummy_recipient_pk = os.urandom(32) # Placeholder
+        kyber_instance = Kyber(security_level="512")
+        dummy_recipient_pk, _ = kyber_instance.generate_keypair()
         session_key, _, _ = kms.perform_hybrid_key_exchange_with_kms(dummy_recipient_pk)
         assert session_key is not None
         print("✓ KMS hybrid key exchange successful")
@@ -207,7 +208,8 @@ def test_basic_functionality():
         print("✓ KMS key revocation successful")
 
         # Test hybrid key exchange with KMS
-        dummy_recipient_pk = os.urandom(32) # Placeholder
+        kyber_instance = Kyber(security_level="512")
+        dummy_recipient_pk, _ = kyber_instance.generate_keypair()
         session_key, _, _ = kms.perform_hybrid_key_exchange_with_kms(dummy_recipient_pk)
         assert session_key is not None
         print("✓ KMS hybrid key exchange successful")

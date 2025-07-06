@@ -1,0 +1,67 @@
+[flake8]
+max-line-length = 120
+extend-ignore =
+    # Missing docstring in public module
+    D100,
+    # Missing docstring in public class
+    D101,
+    # Missing docstring in public method
+    D102,
+    # Missing docstring in public function
+    D103,
+    # Missing docstring in public package
+    D104,
+    # Missing docstring in magic method
+    D105,
+    # Missing docstring in public nested class
+    D106,
+    # Missing docstring in __init__
+    D107,
+    # One-line docstring should fit on one line
+    D200,
+    # No blank lines allowed after function docstring
+    D202,
+    # 1 blank line required between summary line and description
+    D205,
+    # First line should end with a period
+    D400,
+    # First line should be in imperative mood
+    D401,
+    # First line should not end with a period
+    D415,
+    # Missing parameter(s) in Docstring
+    D417,
+    # Line break before binary operator
+    W503,
+    # Line break after binary operator
+    W504,
+    # Module level import not at top of file
+    E402,
+    # Do not use variables named 'l', 'O', or 'I'
+    E741,
+    # Local variable name is assigned to but never used
+    F841
+per-file-ignores =
+    # Ignore unused imports in __init__.py files
+    __init__.py:F401
+    # Ignore line length in test files
+    test_*.py:E501
+exclude =
+    .git,
+    __pycache__,
+    build,
+    dist,
+    *.pyc,
+    *.egg-info,
+    .eggs,
+    .tox,
+    .venv,
+    venv,
+    .env,
+    env,
+    .vscode,
+    .idea,
+    .pytest_cache,
+    .coverage,
+    htmlcov,
+    dilithium_py_KUMO/*

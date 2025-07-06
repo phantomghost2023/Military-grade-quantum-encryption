@@ -40,7 +40,7 @@ class DataManager:
                     "user_id": profile[0],
                     "display_name": profile[1],
                     "profile_picture_url": profile[2],
-                    "preferences": json.loads(profile[3]) if profile[3] else None,
+                    "preferences": profile[3] if profile[3] else None,
                     "created_at": profile[4],
                     "updated_at": profile[5]
                 }
@@ -138,7 +138,7 @@ class DataManager:
                     "user_id": data[1],
                     "data_type": data[2],
                     "encrypted_content": data[3],
-                    "encryption_metadata": json.loads(data[4]),
+                    "encryption_metadata": data[4],
                     "created_at": data[5],
                     "updated_at": data[6]
                 }

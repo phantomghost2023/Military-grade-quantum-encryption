@@ -20,5 +20,47 @@ jobs:
         python-version: '3.x'
     - name: Install dependencies
       run: pip install -r requirements.txt
-    - name: Run tests
+    - name: Check code format with Black
+      run: black --check .
+    - name: Check import order with isort
+      run: isort --check-only .
+    - name: Run Pylint
+      run: pylint --rcfile=.pylintrc src
+    - name: Run MyPy
+      run: mypy --config-file mypy.ini src
+    - name: Run Bandit Security Scan
+      run: bandit -r src -c pyproject.toml
+    - name: Run Dependency Vulnerability Scan
+      run: pip-audit
+    - name: Run tests (including advanced capabilities tests)
       run: python -m unittest discover tests
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production # Or staging, depending on your setup
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
+    - name: Build and push Docker image (Example)
+      # Replace with your actual build and push commands
+      run: |
+        echo "Building Docker image..."
+        # docker build -t your-repo/your-app:$(git rev-parse --short HEAD) .
+        # docker push your-repo/your-app:$(git rev-parse --short HEAD)
+
+    - name: Deploy to production (Example)
+      # Replace with your actual deployment commands (e.g., kubectl, aws cli, ansible)
+      run: |
+        echo "Deploying application..."
+        # Your deployment commands here
+        # e.g., kubectl apply -f deployment.yaml
+        # e.g., aws elasticbeanstalk deploy
+        # TODO: Configure deployment credentials and commands for your specific environment
