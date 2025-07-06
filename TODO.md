@@ -32,7 +32,7 @@ This section outlines the tasks required to implement a graphical user interface
 ### Styling
 - [x] Select UI component library (Material-UI)
 - [x] Create theme/style guide
-- [ ] Implement responsive design
+- [x] Implement responsive design
 
 ### Testing
 - [ ] Unit test components
@@ -255,9 +255,9 @@ This section outlines the tasks required to implement a graphical user interface
 ### Styling
 - [x] Select UI component library (Material-UI)
 - [x] Create theme/style guide
-- [ ] Implement responsive design
+- [x] Implement responsive design
 
 ### Testing
-- [ ] Unit test components
-- [ ] Integration test API calls
-- [ ] End-to-end test workflows
+- [x] Unit test components
+- [x] Integration test API calls
+- [x] End-to-end test workflows
