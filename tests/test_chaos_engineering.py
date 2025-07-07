@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from src.automation.chaos_engineering import ChaosEngineering
+from src.automation.chaos_engineering import ChaosEngineer
 
 class TestChaosEngineering(unittest.TestCase):
     def setUp(self):
@@ -21,5 +21,5 @@ class TestChaosEngineering(unittest.TestCase):
 
     # Add more specific tests for _simulate_latency, _simulate_resource_exhaustion, etc.
 
-if __name__ == '__main__';
+if __name__ == '__main__':
     unittest.main()

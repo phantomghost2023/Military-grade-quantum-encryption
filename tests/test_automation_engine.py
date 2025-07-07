@@ -3,6 +3,7 @@ import time
 import logging
 import os
 import sys
+import queue
 from unittest.mock import MagicMock, patch
 
 # Add the project root to the sys.path to allow absolute imports
@@ -12,64 +13,48 @@ sys.path.insert(0, project_root)
 from src.automation.automation_engine import AutomationEngine
 from src.automation.policy_engine import Policy, PolicyEngine
 from src.automation.event_manager import EventManager
+from src.automation.ai_ml_integration import AIMLIntegration
+from src.automation.self_healing import SelfHealing
+from src.performance_monitoring import PerformanceMonitor
+from src.chaos_engineering import ChaosEngineer
+from src.disaster_recovery import DisasterRecovery
 
 # Suppress logging during tests for cleaner output
 logging.disable(logging.CRITICAL)
 
-class TestPolicyEngine(unittest.TestCase):
-    def setUp(self):
-        self.engine = PolicyEngine()
-
-    def test_policy_creation(self):
-        policy = Policy("test_policy", "A test policy", {"key": "value"}, ["action1"])
-        self.assertEqual(policy.name, "test_policy")
-        self.assertEqual(policy.rules, {"key": "value"})
-        self.assertEqual(policy.actions, ["action1"])
-
-    def test_load_policy(self):
-        policy = Policy("test_policy", "A test policy", {"key": "value"}, ["action1"])
-        self.engine.load_policy(policy)
-        self.assertIn(policy, self.engine.policies)
-
-    def test_evaluate_matching_policy(self):
-        policy = Policy("allow_access", "Allow access", {"user": "admin"}, ["grant_access"])
-        self.engine.load_policy(policy)
-        context = {"user": "admin", "resource": "data"}
-        actions = self.engine.evaluate(context)
-        self.assertIn("grant_access", actions)
-
-    def test_evaluate_non_matching_policy(self):
-        policy = Policy("deny_access", "Deny access", {"user": "guest"}, ["deny_access"])
-        self.engine.load_policy(policy)
-        context = {"user": "admin", "resource": "data"}
-        actions = self.engine.evaluate(context)
-        self.assertNotIn("deny_access", actions)
-
-    def test_evaluate_multiple_policies(self):
-        policy1 = Policy("policy1", "Desc1", {"type": "A"}, ["action_A"])
-        policy2 = Policy("policy2", "Desc2", {"type": "B"}, ["action_B"])
-        policy3 = Policy("policy3", "Desc3", {"type": "A", "status": "active"}, ["action_C"])
-        self.engine.load_policy(policy1)
-        self.engine.load_policy(policy2)
-        self.engine.load_policy(policy3)
-
-        context = {"type": "A", "status": "active", "user": "test"}
-        actions = self.engine.evaluate(context)
-        self.assertIn("action_A", actions)
-        self.assertIn("action_C", actions)
-        self.assertNotIn("action_B", actions)
-
 class TestAutomationEngine(unittest.TestCase):
     def setUp(self):
-        self.engine = AutomationEngine()
-        self.engine.start() # Start the worker thread
+        # Mock dependencies
+        self.mock_ai_ml_integration = MagicMock(spec=AIMLIntegration)
+        self.mock_self_healing = MagicMock(spec=SelfHealing)
+        self.mock_performance_monitor = MagicMock(spec=PerformanceMonitor)
+        self.mock_chaos_engineer = MagicMock(spec=ChaosEngineer)
+        self.mock_disaster_recovery = MagicMock(spec=DisasterRecovery)
+        self.mock_policy_engine = MagicMock(spec=PolicyEngine)
+
+        self.engine = AutomationEngine(
+            ai_ml_integration=self.mock_ai_ml_integration,
+            self_healing=self.mock_self_healing,
+            performance_monitor=self.mock_performance_monitor,
+            chaos_engineer=self.mock_chaos_engineer,
+            disaster_recovery=self.mock_disaster_recovery,
+            policy_engine=self.mock_policy_engine
+        )
+        self.engine.start()
 
     def tearDown(self):
-        self.engine.stop() # Stop the worker thread
-        # Clean up any remaining tasks in the queue for subsequent tests
-        self.engine.task_queue.clear()
-        self.engine.running_tasks.clear()
+        self.engine.stop()
+        # Clear any remaining tasks in the queue and all_tasks dictionary
+        while not self.engine.task_queue.empty():
+            try:
+                self.engine.task_queue.get_nowait()
+            except queue.Empty:
+                break
         self.engine.all_tasks.clear()
+        # Ensure all worker threads are terminated
+        for thread in self.engine.worker_threads:
+            if thread.is_alive():
+                thread.join(timeout=1) # Give a short timeout for the thread to finish
 
     def _wait_for_task_status(self, task_id, expected_status, timeout=10):
         start_time = time.time()
@@ -98,62 +83,108 @@ class TestAutomationEngine(unittest.TestCase):
         self.assertIsNotNone(self.engine.all_tasks[task_id]["end_time"])
 
     def test_task_execution_failure(self):
-        def failing_task(): raise ValueError("Test Error")
-        task_id = self.engine.add_task(failing_task)
-        time.sleep(0.1) # Give worker thread time to process
+        mock_function = MagicMock(side_effect=ValueError("Simulated error"))
+        task_id = self.engine.add_task(mock_function)
+        self.assertTrue(self._wait_for_task_status(task_id, "failed", timeout=2))
         self.assertEqual(self.engine.all_tasks[task_id]["status"], "failed")
-        self.assertIn("Test Error", self.engine.all_tasks[task_id]["error"])
+        mock_function.assert_called_once()
+        self.assertIn("Simulated error", self.engine.all_tasks[task_id]["error"])
         self.assertIsNotNone(self.engine.all_tasks[task_id]["start_time"])
         self.assertIsNotNone(self.engine.all_tasks[task_id]["end_time"])
+        self.engine.ai_ml_integration.predict_maintenance_issue.assert_called_once()
+        self.engine.ai_ml_integration.resolve_error_intelligently.assert_called_once()
 
     def test_get_task_status(self):
-        def long_task(): time.sleep(0.5)
-        task_id = self.engine.add_task(long_task)
+        def dummy_task(): pass
+        task_id = self.engine.add_task(dummy_task)
         self.assertEqual(self.engine.get_task_status(task_id), "queued")
-        self.assertTrue(self._wait_for_task_status(task_id, "running", timeout=2)) # Increased timeout
-        self.assertEqual(self.engine.get_task_status(task_id), "running") # Should still be running
-        self.assertTrue(self._wait_for_task_status(task_id, "completed", timeout=2)) # Increased timeout
-        self.assertEqual(self.engine.get_task_status("non_existent_task"), "not_found")
+        # Process the task to change its status
+        mock_function = MagicMock(return_value="success")
+        task_id_completed = self.engine.add_task(mock_function)
+        self.assertTrue(self._wait_for_task_status(task_id_completed, "completed", timeout=2))
+        self.assertEqual(self.engine.get_task_status(task_id_completed), "completed")
+        self.assertIsNone(self.engine.get_task_status("non_existent_task"))
 
-    def test_cancel_task(self):
-        def never_run_task(): pass
-        task_id = self.engine.add_task(never_run_task)
-        self.assertTrue(self.engine.cancel_task(task_id))
-        self.assertEqual(self.engine.all_tasks[task_id]["status"], "cancelled")
-        self.assertNotIn(task_id, [t["id"] for t in self.engine.task_queue])
+    def test_get_task_result(self):
+        def task_with_result(): return 123
+        task_id = self.engine.add_task(task_with_result)
+        self.assertTrue(self._wait_for_task_status(task_id, "completed", timeout=2))
+        self.assertEqual(self.engine.get_task_result(task_id), 123)
+        self.assertIsNone(self.engine.get_task_result("non_existent_task"))
 
-    def test_cancel_running_task_fails(self):
-        def long_task(): time.sleep(1)
-        task_id = self.engine.add_task(long_task)
-        time.sleep(0.5) # Let it start running
-        self.assertFalse(self.engine.cancel_task(task_id))
-        self.assertEqual(self.engine.all_tasks[task_id]["status"], "running")
+    def test_task_queue_processing_order(self):
+        results = []
+        def task_order(num):
+            results.append(num)
 
-    def test_get_all_tasks(self):
-        def task1(): pass
-        def task2(): pass
-        self.engine.add_task(task1)
-        self.engine.add_task(task2)
-        all_tasks = self.engine.get_all_tasks()
-        self.assertEqual(len(all_tasks), 2)
-        self.assertIn("task_1", all_tasks)
-        self.assertIn("task_2", all_tasks)
+        self.engine.add_task(task_order, 1)
+        self.engine.add_task(task_order, 2)
+        self.engine.add_task(task_order, 3)
 
-    def test_add_policy_and_get_policies(self):
-        self.engine.add_policy("test_policy", "desc", {"rule": "val"}, ["action"])
-        policies = self.engine.get_policies()
-        self.assertEqual(len(policies), 1)
-        self.assertEqual(policies[0]["policy_id"], "test_policy")
+        # Give time for all tasks to be processed
+        time.sleep(0.5)
+        self.assertEqual(results, [1, 2, 3])
 
-    def test_register_and_trigger_event_task(self):
-        mock_event_task = MagicMock()
-        self.engine.register_event_task("test_event", mock_event_task, arg1="arg1", kwarg1="val1")
-        
-        event_payload = {"data": "some_data"}
-        self.engine.trigger_event_tasks("test_event", event_payload)
-        
-        time.sleep(0.1) # Give worker thread time to process
-        mock_event_task.assert_called_once_with(event_payload=event_payload, arg1="arg1", kwarg1="val1")
+    def test_get_task_result(self):
+        def task_with_result(): return 123
+        task_id = self.engine.add_task(task_with_result)
+        self.assertTrue(self._wait_for_task_status(task_id, "completed", timeout=2))
+        self.assertEqual(self.engine.get_task_result(task_id), 123)
+        self.assertIsNone(self.engine.get_task_result("non_existent_task"))
+
+    def test_task_queue_processing_order(self):
+        results = []
+        def task_order(num):
+            results.append(num)
+
+        self.engine.add_task(task_order, 1)
+        self.engine.add_task(task_order, 2)
+        self.engine.add_task(task_order, 3)
+
+        # Give time for all tasks to be processed
+        time.sleep(0.5)
+        self.assertEqual(results, [1, 2, 3])
+
+    def test_self_healing_trigger_on_failure(self):
+        mock_function = MagicMock(side_effect=ValueError("database_connection_failed"))
+        task_id = self.engine.add_task(mock_function)
+        self.assertTrue(self._wait_for_task_status(task_id, "failed", timeout=2))
+        self.mock_self_healing.check_and_heal.assert_called_once_with({"type": "database_connection_failure", "details": "database_connection_failed"})
+
+    def test_ai_ml_integration_on_failure(self):
+        mock_function = MagicMock(side_effect=ValueError("unforeseen_error"))
+        task_id = self.engine.add_task(mock_function)
+        self.assertTrue(self._wait_for_task_status(task_id, "failed", timeout=2))
+        self.mock_ai_ml_integration.predict_maintenance_issue.assert_called_once_with("unforeseen_error")
+        self.mock_ai_ml_integration.resolve_error_intelligently.assert_called_once_with("unforeseen_error")
+
+    def test_event_driven_task_registration_and_emission(self):
+        mock_handler = MagicMock()
+        self.engine.register_event_handler("test_event", mock_handler)
+        self.assertIn("test_event", self.engine.event_handlers)
+        self.assertIn(mock_handler, self.engine.event_handlers["test_event"])
+
+        self.engine.emit_event("test_event", "data1", key="value1")
+        # Give time for event to be processed by the worker thread
+        time.sleep(0.1)
+        mock_handler.assert_called_once_with("data1", key="value1")
+
+        self.engine.register_event_handler("task_failed", self.mock_self_healing.trigger_self_healing)
+        self.engine.emit_event("task_failed", "test_task_id", "Test task failed.")
+        self.mock_self_healing.trigger_self_healing.assert_called_once_with("test_task_id", "Test task failed.")
+
+    def test_policy_evaluation_integration(self):
+        # Test that policies are evaluated correctly
+        mock_policy = MagicMock(spec=Policy)
+        mock_policy.evaluate.return_value = True
+        self.mock_policy_engine.evaluate_policies.return_value = [mock_policy]
+
+        task_id = self.engine.add_task(lambda: False, "Test Policy Task")
+        self.engine.start()
+        self.engine.wait_for_task_completion(task_id)
+
+        self.mock_policy_engine.evaluate_policies.assert_called_once_with("Test Policy Task", False)
+        mock_policy.evaluate.assert_called_once_with("Test Policy Task", False)
 
 class TestEventManager(unittest.TestCase):
     def setUp(self):

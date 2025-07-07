@@ -84,6 +84,13 @@ def decode_token(token):
     except jwt.InvalidTokenError:
         return {'error': 'Invalid token'}
 
+def verify_token(token):
+    try:
+        payload = jwt.decode(token, Config.SECRET_KEY, algorithms=['HS256'])
+        return payload
+    except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+        return None
+
 def create_default_admin():
     admin_username = "admin"
     admin_password = "admin_password" # Consider making this configurable or prompting for it

@@ -11,7 +11,7 @@ class EventManager:
     Manages events and their corresponding handlers.
     Allows for event registration, emission, and asynchronous processing of events.
     """
-    def __init__(self, automation_engine):
+    def __init__(self, automation_engine=None):
         self.handlers = defaultdict(list)  # event_type -> [handler_functions]
         self.event_queue = deque() # Stores events to be processed
         self.is_running = False
@@ -111,6 +111,11 @@ if __name__ == "__main__":
     event_manager.register_handler("system_log", log_handler)
     event_manager.register_handler("new_task", task_trigger_handler)
     event_manager.register_handler("user_login", log_handler)
+
+    def critical_error_alert_handler(error_info):
+        logging.critical(f"CRITICAL ALERT: {error_info['message']} (Type: {error_info['error_type']})")
+
+    event_manager.register_handler("critical_error_alert", critical_error_alert_handler)
 
     # Emit events
     print("\n--- Emitting Events ---")

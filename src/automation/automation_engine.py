@@ -8,6 +8,7 @@ from src.automation.self_healing import SelfHealing
 from src.automation.performance_monitoring import PerformanceMonitor
 from src.automation.chaos_engineering import ChaosEngineer
 from src.disaster_recovery import DisasterRecovery
+from src.policy_engine import Policy
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -17,7 +18,13 @@ class AutomationEngine:
     The core automation engine responsible for managing and executing tasks.
     It handles task scheduling, execution, and basic error handling.
     """
-    def __init__(self):
+    def __init__(self,
+                 ai_ml_integration: AIMLIntegration = None,
+                 self_healing: SelfHealing = None,
+                 performance_monitor: PerformanceMonitor = None,
+                 chaos_engineer: ChaosEngineer = None,
+                 disaster_recovery: DisasterRecovery = None,
+                 policy_engine = None):
         self.task_queue = deque()  # Stores tasks to be executed
         self.running_tasks = {}  # Stores currently running tasks
         self.all_tasks = {} # Stores all tasks, including completed and failed
@@ -26,11 +33,13 @@ class AutomationEngine:
         self.worker_thread = None
         self.event_handlers = {} # For event-driven tasks
         self.policies = {} # Stores defined policies
-        self.ai_ml_integration = AIMLIntegration()
-        self.self_healing = SelfHealing(automation_engine=self) # Pass self for task scheduling
-        self.performance_monitor = PerformanceMonitor()
-        self.chaos_engineer = ChaosEngineer(self)
-        self.disaster_recovery = DisasterRecovery()
+
+        self.ai_ml_integration = ai_ml_integration if ai_ml_integration else AIMLIntegration()
+        self.self_healing = self_healing if self_healing else SelfHealing(automation_engine=self)
+        self.performance_monitor = performance_monitor if performance_monitor else PerformanceMonitor()
+        self.chaos_engineer = chaos_engineer if chaos_engineer else ChaosEngineer(self)
+        self.disaster_recovery = disaster_recovery if disaster_recovery else DisasterRecovery()
+        self.policy_engine = policy_engine if policy_engine else PolicyEngine()
         logging.info("AutomationEngine initialized.")
 
     def _generate_task_id(self):
@@ -86,12 +95,14 @@ class AutomationEngine:
             # Basic error handling to trigger self-healing or AI/ML analysis
             if task["status"] == "failed":
                 logging.error(f"Task '{task_id}' failed. Triggering self-healing/AI-ML analysis.")
-                # Example: Trigger self-healing for specific error types
+                # Trigger self-healing for specific error types
                 if "database_connection_failed" in task["error"].lower():
                     self.self_healing.check_and_heal({"type": "database_connection_failure", "details": task["error"]})
-                # Example: Log for AI/ML analysis for predictive maintenance
+                # Log for AI/ML analysis for predictive maintenance
                 self.ai_ml_integration.predict_maintenance_issue(task["error"])
                 self.ai_ml_integration.resolve_error_intelligently(task["error"])
+                # Evaluate policies for the failed task
+                self.policy_engine.evaluate_policies({"event_type": "task_failure", "task_id": task_id, "error": task["error"]})
 
     def _worker_loop(self):
         """
@@ -181,6 +192,40 @@ class AutomationEngine:
         Retrieves all stored policies.
         """
         return list(self.policies.values())
+
+    def register_event_handler(self, event_type: str, handler_function):
+        """
+        Registers a function to be called when a specific event occurs.
+        """
+        if event_type not in self.event_handlers:
+            self.event_handlers[event_type] = []
+        self.event_handlers[event_type].append(handler_function)
+        logging.info(f"Handler '{handler_function.__name__}' registered for event '{event_type}'.")
+
+    def emit_event(self, event_type: str, *args, **kwargs):
+        """
+        Emits an event, triggering all registered handlers for that event type.
+        Handlers are executed as new tasks in the engine.
+        """
+        if event_type in self.event_handlers:
+            for handler in self.event_handlers[event_type]:
+                self.add_task(handler, *args, **kwargs)
+            logging.info(f"Event '{event_type}' emitted, {len(self.event_handlers[event_type])} handlers triggered.")
+        else:
+            logging.info(f"No handlers registered for event '{event_type}'.")
+
+    def load_policy(self, policy: Policy):
+        """
+        Loads a policy into the engine's policy manager.
+        """
+        self.policy_engine.add_policy(policy.name, policy.rules, policy.actions)
+        logging.info(f"Policy '{policy.name}' loaded into PolicyEngine.")
+
+    def evaluate_policies(self, context: dict):
+        """
+        Evaluates policies based on the given context.
+        """
+        return self.policy_engine.evaluate_policies(context)
 
     def trigger_predictive_maintenance(self, data):
         """

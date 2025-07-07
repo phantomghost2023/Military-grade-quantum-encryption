@@ -1,4 +1,4 @@
-from src.pqc_primitives import Dilithium
+from src.pqc import Dilithium
 
 class KeyManager:
     def __init__(self, security_level=3):

@@ -7,11 +7,19 @@ export const fetchData = async (endpoint, options = {}) => {
   try {
     const response = await fetch(`${API_BASE_URL}/${endpoint}`, options);
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      let errorData = {};
+      try {
+        errorData = await response.json();
+      } catch (e) {
+        // If response is not JSON, use a generic error message
+        errorData = { message: `HTTP error! status: ${response.status}`, error_code: `HTTP_${response.status}` };
+      }
+      throw new Error(JSON.stringify(errorData));
     }
     return await response.json();
   } catch (error) {
     console.error("Error fetching data:", error);
+    // Re-throw the error to be handled by the calling component
     throw error;
   }
 };

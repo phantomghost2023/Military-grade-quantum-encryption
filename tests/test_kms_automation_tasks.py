@@ -1,27 +1,59 @@
 import unittest
-from unittest.mock import patch, MagicMock
-from src.automation.kms_automation_tasks import KMSAutomationTasks
+from src.automation.kms_automation_tasks import automated_key_rotation, automated_key_revocation, automated_key_generation
+from src.kms_api import KMS
+import os
 
 class TestKMSAutomationTasks(unittest.TestCase):
-    @patch('src.automation.kms_automation_tasks.KMSClient')
-    def setUp(self, MockKMSClient):
-        self.mock_kms_client = MockKMSClient.return_value
-        self.kms_tasks = KMSAutomationTasks('http://mock-kms-url')
+    def setUp(self):
+        # Ensure a clean key store for each test
+        if os.path.exists("kms_key_store.json"):
+            os.remove("kms_key_store.json")
 
-    def test_rotate_encryption_key(self):
-        self.mock_kms_client.rotate_key.return_value = ('new_key_id', 'new_key_material')
-        key_id, key_material = self.kms_tasks.rotate_encryption_key('old_key_id')
-        self.assertEqual(key_id, 'new_key_id')
-        self.assertEqual(key_material, 'new_key_material')
-        self.mock_kms_client.rotate_key.assert_called_once_with('old_key_id')
+    def tearDown(self):
+        # Clean up after each test
+        if os.path.exists("kms_key_store.json"):
+            os.remove("kms_key_store.json")
 
-    def test_audit_key_usage(self):
-        self.mock_kms_client.audit_logs.return_value = ['log1', 'log2']
-        logs = self.kms_tasks.audit_key_usage('key_id_to_audit')
-        self.assertEqual(logs, ['log1', 'log2'])
-        self.mock_kms_client.audit_logs.assert_called_once_with('key_id_to_audit')
+    def test_automated_key_generation_and_rotation(self):
+        # Test key generation
+        gen_result = automated_key_generation("Kyber", "test_key_for_rotation")
+        self.assertEqual(gen_result["status"], "success")
+        self.assertEqual(gen_result["key_type"], "Kyber")
+        self.assertEqual(gen_result["key_id"], "test_key_for_rotation")
+
+        # Test key rotation
+        rot_result = automated_key_rotation("test_key_for_rotation")
+        self.assertEqual(rot_result["status"], "success")
+        self.assertEqual(rot_result["key_id"], "test_key_for_rotation")
+        self.assertIn("new_key_id", rot_result)
+
+        # Verify old key is inactive and new key exists
+        kms = KMS()
+        old_key_info = kms.get_key("test_key_for_rotation")
+        self.assertIsNotNone(old_key_info)
+        self.assertEqual(old_key_info["status"], "inactive")
+
+        new_key_info = kms.get_key(rot_result["new_key_id"])
+        self.assertIsNotNone(new_key_info)
+        self.assertEqual(new_key_info["status"], "active")
+
+    def test_automated_key_revocation(self):
+        # Generate a key to revoke
+        gen_result = automated_key_generation("AES-256", "key_to_revoke")
+        self.assertEqual(gen_result["status"], "success")
+
+        # Test key revocation
+        rev_result = automated_key_revocation("key_to_revoke")
+        self.assertEqual(rev_result["status"], "success")
+        self.assertEqual(rev_result["key_id"], "key_to_revoke")
+
+        # Verify key is revoked
+        kms = KMS()
+        revoked_key_info = kms.get_key("key_to_revoke")
+        self.assertIsNotNone(revoked_key_info)
+        self.assertEqual(revoked_key_info["status"], "revoked")
 
     # Add more tests for other KMS automation tasks
 
-if __name__ == '__main__';
+if __name__ == '__main__':
     unittest.main()

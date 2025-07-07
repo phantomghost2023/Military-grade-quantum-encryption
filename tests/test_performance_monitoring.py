@@ -29,5 +29,5 @@ class TestPerformanceMonitoring(unittest.TestCase):
         self.assertEqual(cpu, 50.0)
         self.assertEqual(memory, 70.0)
 
-if __name__ == '__main__';
+if __name__ == '__main__':
     unittest.main()

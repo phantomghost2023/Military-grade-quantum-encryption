@@ -1,4 +1,4 @@
-from src.pqc_primitives import Kyber
+from src.pqc import Kyber
 
 
 class QuantumCipher:

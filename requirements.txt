@@ -57,3 +57,9 @@ flake8-string-format
 flake8-tidy-imports
 flake8-variables-names
 pip-audit
+# Add any project-specific dependencies here
+matplotlib
+pandas
+opentelemetry-api
+opentelemetry-sdk
+opentelemetry-exporter-otlp

@@ -14,36 +14,44 @@ class MockAgent(BaseAgent):
 class TestAgentManager(unittest.TestCase):
     def setUp(self):
         self.agent_manager = AgentManager()
-        self.mock_agent1 = MockAgent("agent1")
-        self.mock_agent2 = MockAgent("agent2")
+        self.mock_agent_id = "test_agent_1"
+        self.mock_capabilities = ["encryption", "decryption"]
+        self.mock_agent = BaseAgent(self.mock_agent_id, self.mock_capabilities)
+
+    def tearDown(self):
+        # Ensure all agents are unregistered after each test
+        for agent_id in list(self.agent_manager.agents.keys()):
+            self.agent_manager.unregister_agent(agent_id)
 
     def test_register_agent(self):
-        self.agent_manager.register_agent(self.mock_agent1)
-        self.assertIn("agent1", self.agent_manager.list_agents())
+        self.agent_manager.register_agent(self.mock_agent)
+        self.assertIn(self.mock_agent_id, self.agent_manager.agents)
+        self.assertEqual(self.agent_manager.agents[self.mock_agent_id].capabilities, self.mock_capabilities)
 
     def test_unregister_agent(self):
-        self.agent_manager.register_agent(self.mock_agent1)
-        self.agent_manager.unregister_agent("agent1")
-        self.assertNotIn("agent1", self.agent_manager.list_agents())
+        self.agent_manager.register_agent(self.mock_agent)
+        self.agent_manager.unregister_agent(self.mock_agent_id)
+        self.assertNotIn(self.mock_agent_id, self.agent_manager.agents)
 
     def test_get_agent(self):
-        self.agent_manager.register_agent(self.mock_agent1)
-        retrieved_agent = self.agent_manager.get_agent("agent1")
-        self.assertEqual(retrieved_agent.agent_id, "agent1")
+        self.agent_manager.register_agent(self.mock_agent)
+        retrieved_agent = self.agent_manager.get_agent(self.mock_agent_id)
+        self.assertIsNotNone(retrieved_agent)
+        self.assertEqual(retrieved_agent.agent_id, self.mock_agent_id)
 
     def test_execute_agent_task(self):
-        self.agent_manager.register_agent(self.mock_agent1)
-        result = self.agent_manager.execute_agent_task("agent1", "perform_action")
-        self.assertEqual(result, "Agent agent1 executed: perform_action")
-        self.assertTrue(self.mock_agent1.executed)
+        self.agent_manager.register_agent(self.mock_agent)
+        mock_task_func = MagicMock(return_value="task_completed")
+        self.agent_manager.execute_agent_task(self.mock_agent_id, mock_task_func, "arg1", kwarg="value1")
+        mock_task_func.assert_called_once_with("arg1", kwarg="value1")
 
     def test_list_agents(self):
-        self.agent_manager.register_agent(self.mock_agent1)
-        self.agent_manager.register_agent(self.mock_agent2)
+        self.agent_manager.register_agent(BaseAgent("agent_1", ["cap_a"]))
+        self.agent_manager.register_agent(BaseAgent("agent_2", ["cap_b"]))
         agents = self.agent_manager.list_agents()
-        self.assertIn("agent1", agents)
-        self.assertIn("agent2", agents)
         self.assertEqual(len(agents), 2)
+        self.assertIn("agent_1", [a.agent_id for a in agents])
+        self.assertIn("agent_2", [a.agent_id for a in agents])
 
-if __name__ == '__main__';
+if __name__ == '__main__':
     unittest.main()

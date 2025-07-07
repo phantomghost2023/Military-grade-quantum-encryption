@@ -1,7 +1,7 @@
 """This module provides the command-line interface for the quantum encryption project."""
 import argparse
 from src.hybrid_qkd_api import encrypt_data_hybrid, decrypt_data_hybrid
-from src.error_handling.error_handler import ErrorHandler, QuantumEncryptionError
+from src.error_handling.error_handler import ErrorHandler, QuantumError
 
 
 def encrypt_file(input_filepath: str, output_filepath: str) -> None:

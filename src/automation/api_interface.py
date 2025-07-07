@@ -19,6 +19,10 @@ app = Flask(__name__)
 engine = AutomationEngine()
 event_manager = EventManager(engine) # Pass engine to EventManager
 agent_manager = AgentManager()
+policy_manager = PolicyManager()
+
+# Add default roles and permissions
+policy_manager.add_role("default", ["create_task", "view_status"])
 
 # Start the engine and event manager worker threads
 engine.start()

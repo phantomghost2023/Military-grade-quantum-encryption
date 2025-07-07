@@ -26,5 +26,5 @@ class TestQuantumEncryptionFramework(unittest.TestCase):
         self.assertTrue(self.key_manager.delete_key(key_id))
         self.assertIsNone(self.key_manager.get_key(key_id))
 
-if __name__ == '__main__';
+if __name__ == '__main__':
     unittest.main()

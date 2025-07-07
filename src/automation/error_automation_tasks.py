@@ -1,8 +1,7 @@
 
-error_automation_tasks.py
-
-This module defines automation tasks for handling errors detected within the system.
+"""This module defines automation tasks for handling errors detected within the system.
 These tasks can be registered with the AutomationEngine and triggered by error events.
+"""
 
 
 import logging

@@ -2,7 +2,7 @@
 import argparse
 import base64
 from src.hybrid_qkd_api import encrypt_data_hybrid, decrypt_data_hybrid
-from src.error_handling.error_handler import ErrorHandler, QuantumEncryptionError
+from src.error_handling.error_handler import ErrorHandler, QuantumError
 from src.data_manager import DataManager
 from src.auth import get_user_by_username
 

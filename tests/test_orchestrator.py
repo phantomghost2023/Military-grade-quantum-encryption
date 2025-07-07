@@ -28,5 +28,5 @@ class TestOrchestrator(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.orchestrator.execute_workflow('non_existent_workflow', {})
 
-if __name__ == '__main__';
+if __name__ == '__main__':
     unittest.main()

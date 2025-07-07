@@ -32,7 +32,12 @@ const Login = () => {
         setError('Invalid credentials');
       }
     } catch (err) {
-      setError(err.message || 'Login failed');
+      try {
+        const errorData = JSON.parse(err.message);
+        setError(errorData.message || 'Login failed');
+      } catch (parseError) {
+        setError(err.message || 'Login failed');
+      }
     }
   };
 

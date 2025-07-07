@@ -22,7 +22,7 @@ class TestDisasterRecovery(unittest.TestCase):
         with open(os.path.join(self.test_dir, 'subdir', 'file3.txt'), 'w') as f:
             f.write('content of file3')
 
-        self.dr = DisasterRecovery(backup_base_path=self.backup_dir)
+        self.dr = DisasterRecovery(backup_base_dir=self.backup_dir)
         self.dr.add_data_source(self.test_dir)
 
     def tearDown(self):
@@ -32,10 +32,11 @@ class TestDisasterRecovery(unittest.TestCase):
             shutil.rmtree(self.backup_dir)
 
     def test_add_data_source(self):
-        self.assertIn(self.test_dir, self.dr.data_sources)
+        self.assertIn({'path': self.test_dir, 'is_directory': False}, self.dr.data_to_backup)
 
     def test_create_backup(self):
-        backup_path = self.dr.create_backup()
+        backup_path = self.dr.create_backup(backup_name="test_backup")
+        self.assertIsNotNone(backup_path)
         self.assertTrue(os.path.exists(backup_path))
         self.assertTrue(zipfile.is_zipfile(backup_path))
 
@@ -48,8 +49,8 @@ class TestDisasterRecovery(unittest.TestCase):
 
     def test_list_backups(self):
         # Create a few backups
-        self.dr.create_backup()
-        self.dr.create_backup()
+        self.dr.create_backup(backup_name="test_backup_1")
+        self.dr.create_backup(backup_name="test_backup_2")
         backups = self.dr.list_backups()
         self.assertEqual(len(backups), 2)
         for backup in backups:
@@ -57,7 +58,7 @@ class TestDisasterRecovery(unittest.TestCase):
             self.assertTrue(backup.endswith('.zip'))
 
     def test_restore_backup(self):
-        backup_path = self.dr.create_backup()
+        backup_path = self.dr.create_backup(backup_name="test_restore_backup")
         
         # Remove original data to simulate disaster
         shutil.rmtree(self.test_dir)
@@ -79,8 +80,8 @@ class TestDisasterRecovery(unittest.TestCase):
         shutil.rmtree(restore_target)
 
     def test_restore_backup_non_existent(self):
-        with self.assertRaises(FileNotFoundError):
-            self.dr.restore_backup('non_existent_backup.zip', 'restore_target')
+        result = self.dr.restore_backup('non_existent_backup.zip', 'test_restore_target')
+        self.assertFalse(result)
 
 if __name__ == '__main__':
     unittest.main()

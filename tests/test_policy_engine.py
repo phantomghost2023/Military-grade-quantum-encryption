@@ -21,5 +21,5 @@ class TestPolicyEngine(unittest.TestCase):
         self.assertTrue(self.policy_engine.remove_policy('temp_policy'))
         self.assertFalse(self.policy_engine.remove_policy('non_existent_policy'))
 
-if __name__ == '__main__';
+if __name__ == '__main__':
     unittest.main()
