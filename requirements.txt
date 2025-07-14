@@ -63,3 +63,5 @@ pandas
 opentelemetry-api
 opentelemetry-sdk
 opentelemetry-exporter-otlp
+numpy
+scipy

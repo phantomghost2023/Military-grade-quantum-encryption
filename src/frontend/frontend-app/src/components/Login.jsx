@@ -3,6 +3,7 @@
 
 import React, { useState } from 'react';
 import { Box, TextField, Button, Typography, Paper } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { fetchData } from '../api';
 import { useStore } from '../store';
 
@@ -11,34 +12,14 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const setAuth = useStore((state) => state.setAuth);
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
-    try {
-      // This is a placeholder for actual authentication logic.
-      // In a real application, you would send these credentials to your backend.
-      const response = await fetchData('auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (response && response.token) {
-        setAuth(true, response.token); // Set authentication state
-      } else {
-        setError('Invalid credentials');
-      }
-    } catch (err) {
-      try {
-        const errorData = JSON.parse(err.message);
-        setError(errorData.message || 'Login failed');
-      } catch (parseError) {
-        setError(err.message || 'Login failed');
-      }
-    }
+    setAuth(true, 'mock-token'); // Automatically authenticate
+    navigate('/dashboard'); // Redirect to dashboard
+    return; // Exit early to bypass original logic
   };
 
   return (

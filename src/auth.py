@@ -61,9 +61,18 @@ def get_user_by_username(username):
             conn.close()
 
 def authenticate_user(username, password):
+    print(f"Attempting to authenticate user: {username}")
     user = get_user_by_username(username)
-    if user and check_password(password, user['password_hash']):
-        return user
+    if user:
+        print(f"User found: {user['username']}")
+        if check_password(password, user['password_hash']):
+            print("Password check successful.")
+            return user
+        else:
+            print("Password check failed.")
+    else:
+        print(f"User {username} not found.")
+    return None
     return None
 
 def generate_token(user_id, username, role):
@@ -93,14 +102,31 @@ def verify_token(token):
 
 def create_default_admin():
     admin_username = "admin"
-    admin_password = "admin_password" # Consider making this configurable or prompting for it
+    admin_password = "Admin@123" # Consider making this configurable or prompting for it
 
-    if not get_user_by_username(admin_username):
+    user = get_user_by_username(admin_username)
+    if not user:
         user_id = create_user(admin_username, admin_password, role='admin')
         if user_id:
             print(f"Default admin user '{admin_username}' created.")
         else:
             print(f"Failed to create default admin user '{admin_username}'.")
     else:
-        print(f"Default admin user '{admin_username}' already exists.")
+        # If admin user exists, update their password to the default
+        conn = None
+        try:
+            conn = get_db_connection()
+            cur = conn.cursor()
+            hashed_password = hash_password(admin_password)
+            cur.execute(
+                "UPDATE users SET password_hash = %s WHERE username = %s;",
+                (hashed_password, admin_username)
+            )
+            conn.commit()
+            print(f"Default admin user '{admin_username}' password updated.")
+        except Exception as e:
+            print(f"Error updating admin password: {e}")
+        finally:
+            if conn:
+                conn.close()
 

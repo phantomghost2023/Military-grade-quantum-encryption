@@ -1,5 +1,13 @@
 
 from flask import Flask, request, jsonify
+from flask_cors import CORS
+import sys
+import os
+
+# Add the project root to the Python path
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, project_root)
+
 from src.auth import authenticate_user, generate_token, create_default_admin
 from src.database import init_db
 from src.data_manager import DataManager
@@ -13,6 +21,7 @@ from src.input_validation import validate_string, sanitize_string, validate_emai
 from src.logging_tracing import CentralizedLogger, DistributedTracer
 
 app = Flask(__name__)
+CORS(app) # Enable CORS for all routes
 
 # Initialize Logger and Tracer
 logger = CentralizedLogger()
